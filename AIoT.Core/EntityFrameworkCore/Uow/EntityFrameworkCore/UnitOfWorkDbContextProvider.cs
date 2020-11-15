@@ -1,12 +1,12 @@
 using System;
-using AIoT.Core.EntityFrameworkCore;
 using AIoT.Core.Uow;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp;
 
-namespace Volo.Abp.Uow.EntityFrameworkCore
+namespace AIoT.Core.EntityFrameworkCore.Uow.EntityFrameworkCore
 {
 
     public class UnitOfWorkDbContextProvider : IDbContextProvider
@@ -34,20 +34,20 @@ namespace Volo.Abp.Uow.EntityFrameworkCore
             var connectionStringName = typeof(TDbContext).Name;
             var connectionString = _connectionStringResolver.Resolve<TDbContext>();
             var dbContextKey = $"{typeof(TDbContext).FullName}:{unitOfWork.Options.IsTransactional}:{connectionString}";
-
+            var databaseProvider = _connectionStringResolver.GetDatabaseProvider();
             var databaseApi = unitOfWork.GetOrAddDatabaseApi(
                 dbContextKey,
                 () => new EfCoreDatabaseApi<TDbContext>(
-                    CreateDbContext<TDbContext>(unitOfWork, connectionStringName, connectionString)
+                    CreateDbContext<TDbContext>(unitOfWork, connectionStringName, connectionString, databaseProvider)
                 ));
 
             return ((EfCoreDatabaseApi<TDbContext>)databaseApi).DbContext;
         }
 
-        private TDbContext CreateDbContext<TDbContext>(IUnitOfWork unitOfWork, string connectionStringName, string connectionString)
+        private TDbContext CreateDbContext<TDbContext>(IUnitOfWork unitOfWork, string connectionStringName, string connectionString,string databaseProvider)
             where TDbContext : AbpDbContext
         {
-            var creationContext = new DbContextCreationContext(connectionStringName, connectionString);
+            var creationContext = new DbContextCreationContext(connectionStringName, connectionString, databaseProvider);
             using (DbContextCreationContext.Use(creationContext))
             {
                 var dbContext = CreateDbContext<TDbContext>(unitOfWork);

@@ -14,13 +14,15 @@ namespace AIoT.Core.EntityFrameworkCore
         public string ConnectionStringName { get; }
 
         public string ConnectionString { get; }
+        public string DatabaseProvider { get; }
 
         public DbConnection ExistingConnection { get; set; }
 
-        public DbContextCreationContext(string connectionStringName, string connectionString)
+        public DbContextCreationContext(string connectionStringName, string connectionString, string databaseProvider)
         {
             ConnectionStringName = connectionStringName;
             ConnectionString = connectionString;
+            DatabaseProvider = databaseProvider;
         }
 
         public static IDisposable Use(DbContextCreationContext context)
@@ -31,24 +33,5 @@ namespace AIoT.Core.EntityFrameworkCore
         }
     }
 
-    //public class DisposeAction : IDisposable
-    //{
-    //    private readonly Action _action;
-
-    //    /// <summary>
-    //    /// Creates a new <see cref="DisposeAction"/> object.
-    //    /// </summary>
-    //    /// <param name="action">Action to be executed when this object is disposed.</param>
-    //    public DisposeAction([NotNull] Action action)
-    //    {
-    //        Check.NotNull(action, nameof(action));
-
-    //        _action = action;
-    //    }
-
-    //    public void Dispose()
-    //    {
-    //        _action();
-    //    }
-    //}
+  
 }

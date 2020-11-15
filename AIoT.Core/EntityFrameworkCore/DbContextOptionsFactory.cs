@@ -15,6 +15,7 @@ namespace AIoT.Core.EntityFrameworkCore
 
             var context = new AbpDbContextConfigurationContext<TDbContext>(
                 creationContext.ConnectionString,
+                creationContext.DatabaseProvider,
                 serviceProvider,
                 creationContext.ConnectionStringName,
                 creationContext.ExistingConnection
@@ -87,6 +88,7 @@ namespace AIoT.Core.EntityFrameworkCore
             var connectionStringResolver = serviceProvider.GetRequiredService<IConnectionStringResolver>();
             var connectionStringName = typeof(TDbContext).Name;
             var connectionString = connectionStringResolver.Resolve<TDbContext>();
+            var databaseProvider = connectionStringResolver.GetDatabaseProvider();
 
             if (string.IsNullOrEmpty(connectionString))
             {
@@ -95,7 +97,8 @@ namespace AIoT.Core.EntityFrameworkCore
 
             return new DbContextCreationContext(
                 connectionStringName,
-                connectionString
+                connectionString,
+                databaseProvider
             );
         }
     }

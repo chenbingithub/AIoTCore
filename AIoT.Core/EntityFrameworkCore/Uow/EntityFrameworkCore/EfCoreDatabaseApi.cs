@@ -1,9 +1,8 @@
-using AIoT.Core.EntityFrameworkCore;
-using AIoT.Core.Uow;
 using System.Threading;
 using System.Threading.Tasks;
+using AIoT.Core.Uow;
 
-namespace Volo.Abp.Uow.EntityFrameworkCore
+namespace AIoT.Core.EntityFrameworkCore.Uow.EntityFrameworkCore
 {
     public class EfCoreDatabaseApi<TDbContext> : IDatabaseApi, ISupportsSavingChanges
         where TDbContext : AbpDbContext

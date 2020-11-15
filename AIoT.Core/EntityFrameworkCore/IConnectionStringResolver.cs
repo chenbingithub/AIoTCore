@@ -11,5 +11,10 @@ namespace AIoT.Core.EntityFrameworkCore
         /// 获取指定名称的连接字符串
         /// </summary>
         string Resolve<TDbContext>() where TDbContext : DbContext;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        string GetDatabaseProvider();
     }
 }

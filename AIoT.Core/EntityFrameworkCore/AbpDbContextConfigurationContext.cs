@@ -14,6 +14,10 @@ namespace AIoT.Core.EntityFrameworkCore
         public string ConnectionString { get; }
 
         public string ConnectionStringName { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string DatabaseProvider { get; }
 
         public DbConnection ExistingConnection { get; }
 
@@ -21,11 +25,13 @@ namespace AIoT.Core.EntityFrameworkCore
 
         public AbpDbContextConfigurationContext(
             [NotNull] string connectionString,
+            [NotNull] string databaseProvider,
             [NotNull] IServiceProvider serviceProvider,
-             string connectionStringName,
+            string connectionStringName,
             DbConnection existingConnection)
         {
             ConnectionString = connectionString;
+            DatabaseProvider = connectionString;
             ServiceProvider = serviceProvider;
             ConnectionStringName = connectionStringName;
             ExistingConnection = existingConnection;
@@ -41,12 +47,14 @@ namespace AIoT.Core.EntityFrameworkCore
         public new DbContextOptionsBuilder<TDbContext> DbContextOptions => (DbContextOptionsBuilder<TDbContext>)base.DbContextOptions;
 
         public AbpDbContextConfigurationContext(
-            string connectionString,
+            [NotNull]string connectionString,
+            [NotNull] string databaseProvider,
             [NotNull] IServiceProvider serviceProvider,
             string connectionStringName,
              DbConnection existingConnection)
             : base(
-                  connectionString, 
+                  connectionString,
+                  databaseProvider,
                   serviceProvider, 
                   connectionStringName, 
                   existingConnection)

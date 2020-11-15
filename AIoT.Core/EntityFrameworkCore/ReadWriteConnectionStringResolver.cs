@@ -66,5 +66,11 @@ namespace AIoT.Core.EntityFrameworkCore
 
             return _options.ConnectionStrings.Default;
         }
+
+        public virtual string GetDatabaseProvider() 
+        {
+           
+            return _options.ConnectionStrings.DatabaseProvider;
+        }
     }
 }

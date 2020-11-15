@@ -2,13 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using AIoT.Core.EntityFrameworkCore;
 using AIoT.Core.Uow;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Volo.Abp.Uow.EntityFrameworkCore
+namespace AIoT.Core.EntityFrameworkCore.Uow.EntityFrameworkCore
 {
     public class EfCoreTransactionApi : ITransactionApi, ISupportsRollback
     {
