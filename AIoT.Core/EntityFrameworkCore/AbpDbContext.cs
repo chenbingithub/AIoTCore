@@ -13,25 +13,8 @@ namespace AIoT.Core.EntityFrameworkCore
         {
 
         }
-        public virtual DbSet<Product> Products { get; set; }
-    }
-
-
-    //public class AbpDbContext : AbpDbContext<AbpDbContext>
-    //{
-    //    /// <summary>
-    //    /// 实体上下文基类
-    //    /// </summary>
-    //    public AbpDbContext(DbContextOptions<AbpDbContext> options) : base(options)
-    //    {
-    //    }
        
-    //}
-    [Table("product")]
-    public partial class Product
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-
     }
+
+
 }
