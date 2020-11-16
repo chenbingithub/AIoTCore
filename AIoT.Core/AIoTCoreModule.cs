@@ -8,7 +8,6 @@ using AIoT.Core.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Modularity;
 using AIoT.Core.Uow;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using AIoT.Core.Repository;
