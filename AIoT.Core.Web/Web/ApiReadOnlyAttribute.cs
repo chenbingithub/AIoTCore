@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using AIoT.Core.DataFilter;
 using AIoT.Core.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AIoT.Core.DataFilter
+namespace AIoT.Core.Web
 {
     /// <summary>
     /// 使用读库
