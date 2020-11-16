@@ -2,7 +2,6 @@
 using AIoT.Core.DataFilter;
 using AIoT.Core.Entities.Auditing;
 using AIoT.Core.EntityFrameworkCore;
-using AIoT.Core.EntityFrameworkCore.Uow.EntityFrameworkCore;
 using AIoT.Core.Enums;
 using AIoT.Core.Extensions;
 using Microsoft.Extensions.DependencyInjection;

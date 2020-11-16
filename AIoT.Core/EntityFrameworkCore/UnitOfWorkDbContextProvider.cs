@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp;
 
-namespace AIoT.Core.EntityFrameworkCore.Uow.EntityFrameworkCore
+namespace AIoT.Core.EntityFrameworkCore
 {
 
     public class UnitOfWorkDbContextProvider : IDbContextProvider
