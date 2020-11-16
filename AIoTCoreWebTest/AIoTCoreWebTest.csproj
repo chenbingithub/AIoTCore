@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AIoT.Core.Web\AIoT.Core.Web.csproj" />
+    <ProjectReference Include="..\AIoT.Core\AIoT.Core.csproj" />
+  </ItemGroup>
+
+
+</Project>

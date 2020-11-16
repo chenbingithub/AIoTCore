@@ -2,6 +2,7 @@
 using AIoT.Core.DataFilter;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Volo.Abp.DependencyInjection;
 
 namespace AIoT.Core.EntityFrameworkCore
 {
@@ -28,7 +29,7 @@ namespace AIoT.Core.EntityFrameworkCore
     /// <summary>
     /// 读写分享连接字符串提供程序
     /// </summary>
-    public class ReadWriteConnectionStringResolver : IConnectionStringResolver
+    public class ReadWriteConnectionStringResolver : IConnectionStringResolver, ITransientDependency
     {
         private readonly DbConnectionOptions _options;
         private readonly IDataState _state;

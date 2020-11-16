@@ -31,7 +31,7 @@ namespace AIoT.Core.EntityFrameworkCore
             DbConnection existingConnection)
         {
             ConnectionString = connectionString;
-            DatabaseProvider = connectionString;
+            DatabaseProvider = databaseProvider;
             ServiceProvider = serviceProvider;
             ConnectionStringName = connectionStringName;
             ExistingConnection = existingConnection;

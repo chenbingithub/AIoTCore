@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading;
 using Microsoft.Extensions.Options;
 using Volo.Abp;
+using Volo.Abp.DependencyInjection;
 
 namespace AIoT.Core.DataFilter
 {
-    public class DataState : IDataState
+    public class DataState : IDataState, ISingletonDependency
     {
         private readonly ConcurrentDictionary<string, AsyncLocalDataStore> _datas;
         private readonly DataStateOptions _options;

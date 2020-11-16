@@ -1,26 +1,34 @@
 using System;
+using System.Collections.Generic;
+using AIoT.Core.DataFilter;
 using AIoT.Core.Uow;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp;
+using Volo.Abp.DependencyInjection;
 
 namespace AIoT.Core.EntityFrameworkCore
 {
 
-    public class UnitOfWorkDbContextProvider : IDbContextProvider
-       
+    public class UnitOfWorkDbContextProvider : IDbContextProvider, ITransientDependency
+
     {
+        private readonly IServiceProvider _serviceProvider;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IConnectionStringResolver _connectionStringResolver;
-
+        private readonly IDataState _dataState;
+        private readonly Dictionary<(Type Type, bool IsRead), DbContext>
+            _cacheDbContext = new Dictionary<(Type Type, bool IsRead), DbContext>();
         public UnitOfWorkDbContextProvider(
             IUnitOfWorkManager unitOfWorkManager,
-            IConnectionStringResolver connectionStringResolver)
+            IConnectionStringResolver connectionStringResolver, IDataState dataState, IServiceProvider serviceProvider)
         {
             _unitOfWorkManager = unitOfWorkManager;
             _connectionStringResolver = connectionStringResolver;
+            _dataState = dataState;
+            _serviceProvider = serviceProvider;
         }
 
         public TDbContext GetDbContext<TDbContext>() where TDbContext : AbpDbContext
@@ -28,7 +36,9 @@ namespace AIoT.Core.EntityFrameworkCore
             var unitOfWork = _unitOfWorkManager.Current;
             if (unitOfWork == null)
             {
-                throw new AbpException("A DbContext can only be created inside a unit of work!");
+                var cackeKey = (typeof(TDbContext), _dataState.IsEnabled(DataStateKeys.IsReadonly));
+                return (TDbContext)_cacheDbContext.GetOrAdd(cackeKey, p => CreateDbContext<TDbContext>(null));
+                //throw new AbpException("A DbContext can only be created inside a unit of work!");
             }
            
             var connectionStringName = typeof(TDbContext).Name;
@@ -67,9 +77,9 @@ namespace AIoT.Core.EntityFrameworkCore
 
         private TDbContext CreateDbContext<TDbContext>(IUnitOfWork unitOfWork) where TDbContext : AbpDbContext
         {
-            return unitOfWork.Options.IsTransactional
+            return unitOfWork?.Options.IsTransactional==true
                 ? CreateDbContextWithTransaction<TDbContext>(unitOfWork)
-                : unitOfWork.ServiceProvider.GetRequiredService<TDbContext>();
+                : _serviceProvider.GetRequiredService<TDbContext>();
         }
 
         public TDbContext CreateDbContextWithTransaction<TDbContext>(IUnitOfWork unitOfWork)
