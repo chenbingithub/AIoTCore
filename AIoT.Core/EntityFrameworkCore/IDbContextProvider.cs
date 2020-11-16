@@ -1,4 +1,5 @@
 ﻿﻿ using AIoT.Core.Enums;
+  using Microsoft.EntityFrameworkCore;
 
   namespace AIoT.Core.EntityFrameworkCore
 {
@@ -10,8 +11,8 @@
         /// <summary>
         /// 获取数据库上下文
         /// </summary>
-        TDbContext GetDbContext<TDbContext>() where TDbContext : AbpDbContext;
+        TDbContext GetDbContext<TDbContext>() where TDbContext : DbContext;
 
-        TDbContext GetDbContext<TDbContext>(EfCoreDatabaseProvider databaseProvider) where TDbContext : AbpDbContext;
+        TDbContext GetDbContext<TDbContext>(EfCoreDatabaseProvider databaseProvider) where TDbContext : DbContext;
     }
 }

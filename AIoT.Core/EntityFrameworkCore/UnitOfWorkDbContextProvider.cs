@@ -33,7 +33,7 @@ namespace AIoT.Core.EntityFrameworkCore
             _serviceProvider = serviceProvider;
         }
 
-        public TDbContext GetDbContext<TDbContext>() where TDbContext : AbpDbContext
+        public TDbContext GetDbContext<TDbContext>() where TDbContext : DbContext
         {
             var unitOfWork = _unitOfWorkManager.Current;
             if (unitOfWork == null)
@@ -56,7 +56,7 @@ namespace AIoT.Core.EntityFrameworkCore
             return ((EfCoreDatabaseApi<TDbContext>)databaseApi).DbContext;
         }
 
-        public TDbContext GetDbContext<TDbContext>(EfCoreDatabaseProvider databaseProvider) where TDbContext : AbpDbContext
+        public TDbContext GetDbContext<TDbContext>(EfCoreDatabaseProvider databaseProvider) where TDbContext : DbContext
         {
             
             var connectionStringName = $"{typeof(TDbContext).Name}_{databaseProvider.ToString()}";
@@ -83,7 +83,7 @@ namespace AIoT.Core.EntityFrameworkCore
         }
 
         private TDbContext CreateDbContext<TDbContext>(IUnitOfWork unitOfWork, string connectionStringName, string connectionString,string databaseProvider)
-            where TDbContext : AbpDbContext
+            where TDbContext : DbContext
         {
             var creationContext = new DbContextCreationContext(connectionStringName, connectionString, databaseProvider);
             using (DbContextCreationContext.Use(creationContext))
@@ -103,7 +103,7 @@ namespace AIoT.Core.EntityFrameworkCore
             }
         }
 
-        private TDbContext CreateDbContext<TDbContext>(IUnitOfWork unitOfWork) where TDbContext : AbpDbContext
+        private TDbContext CreateDbContext<TDbContext>(IUnitOfWork unitOfWork) where TDbContext : DbContext
         {
             return unitOfWork?.Options.IsTransactional==true
                 ? CreateDbContextWithTransaction<TDbContext>(unitOfWork)
@@ -111,7 +111,7 @@ namespace AIoT.Core.EntityFrameworkCore
         }
 
         public TDbContext CreateDbContextWithTransaction<TDbContext>(IUnitOfWork unitOfWork)
-             where TDbContext : AbpDbContext
+             where TDbContext : DbContext
         {
             var transactionApiKey = $"EntityFrameworkCore_{DbContextCreationContext.Current.ConnectionString}";
             var activeTransaction = unitOfWork.FindTransactionApi(transactionApiKey) as EfCoreTransactionApi;

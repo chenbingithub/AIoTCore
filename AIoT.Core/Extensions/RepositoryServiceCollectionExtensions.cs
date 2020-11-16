@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using AIoT.Core.Entities;
 using AIoT.Core.EntityFrameworkCore;
+using AIoT.Core.Enums;
 using AIoT.Core.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,17 +16,16 @@ namespace AIoT.Core.Extensions
     public static class RepositoryServiceCollectionExtensions
     {
         public static IServiceCollection AddAbpDbContext<TDbContext>(
-            this IServiceCollection services,
-            Action<AbpDbContextConfigurationContext<TDbContext>> options = null
+            this IServiceCollection services
             ,bool registerRepository = false)
             where TDbContext : AbpDbContext<TDbContext>
         {
             
 
             services.TryAddTransient(DbContextOptionsFactory.Create<TDbContext>);
-            services.AddDbContext<TDbContext>(ServiceLifetime.Transient, ServiceLifetime.Transient);
+            services.AddDbContext<TDbContext, TDbContext>(ServiceLifetime.Transient, ServiceLifetime.Transient);
 
-            services.Configure<AbpDbContextOptions>(p => { p.Configure(options); });
+            
             if (registerRepository)
             {
                 services.AddRepositoryWithDbSet<TDbContext>();

@@ -16,7 +16,7 @@ namespace AIoT.Core.Repository
     public class EfWriteRepository<TDbContext, TEntity> :
         EfReadRepository<TDbContext, TEntity>,
         IWriteRepository<TEntity>
-        where TDbContext : AbpDbContext
+        where TDbContext : DbContext
         where TEntity : class, IEntity
     {
         #region 构造函数、私有字段
@@ -163,7 +163,7 @@ namespace AIoT.Core.Repository
     public class EfWriteRepository<TDbContext, TEntity, TKey> :
         EfWriteRepository<TDbContext, TEntity>,
         IWriteRepository<TEntity, TKey>
-        where TDbContext : AbpDbContext
+        where TDbContext : DbContext
         where TEntity : class, IEntity<TKey>
     {
         /// <inheritdoc />

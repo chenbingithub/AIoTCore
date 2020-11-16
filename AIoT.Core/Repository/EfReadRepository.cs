@@ -15,7 +15,7 @@ namespace AIoT.Core.Repository
     /// <summary>
     /// 读库仓储
     /// </summary>
-    public class EfReadRepository<TDbContext, TEntity> : EfRepositoryBase, IReadRepository<TEntity>, IEnumerable where TDbContext : AbpDbContext
+    public class EfReadRepository<TDbContext, TEntity> : EfRepositoryBase, IReadRepository<TEntity>, IEnumerable where TDbContext : DbContext
         where TEntity : class, IEntity
     {
         #region 构造函数、私有字段
@@ -225,7 +225,7 @@ namespace AIoT.Core.Repository
     /// 读库仓储
     /// </summary>
     public class EfReadRepository<TDbContext, TEntity, TKey> : EfReadRepository<TDbContext, TEntity>, IReadRepository<TEntity, TKey>
-        where TDbContext : AbpDbContext
+        where TDbContext : DbContext
         where TEntity : class, IEntity<TKey>
     {
         /// <inheritdoc />

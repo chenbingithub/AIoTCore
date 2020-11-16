@@ -1,6 +1,9 @@
 using System;
 using AIoT.Core;
+using AIoT.Core.EntityFrameworkCore;
+using AIoT.Core.Extensions;
 using AIoT.Core.Web;
+using AIoTCoreWebTest.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,6 +23,7 @@ namespace AIoTCoreWebTest
             // Routing
             services.AddRouting();
             services.AddControllers();
+            services.AddAbpDbContext<EfDbContext>();
         }
 
         public override void OnApplicationInitialization(ApplicationInitializationContext context)

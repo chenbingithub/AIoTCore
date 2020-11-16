@@ -66,41 +66,75 @@ namespace AIoT.Core
             var config = services.GetConfiguration();
             Configure<DbConnectionOptions>(config);
             Configure<CustomOptions>(config.GetSection("CustomOptions"));
+            Configure<AbpDbContextOptions>(options =>
+            {
+                options.PreConfigure(p =>
+                {
+                    if (p.DatabaseProvider.ToLower() == EfCoreDatabaseProvider.MySql.ToString().ToLower())
+                    {
+                        if (p.ExistingConnection != null)
+                            p.DbContextOptions.UseMySQL(p.ExistingConnection);
+                        else
+                            p.DbContextOptions.UseMySQL(p.ConnectionString);
+                    }
+                    else if (p.DatabaseProvider.ToLower() == EfCoreDatabaseProvider.SqlServer.ToString().ToLower())
+                    {
+                        if (p.ExistingConnection != null)
+                            p.DbContextOptions.UseSqlServer(p.ExistingConnection);
+                        else
+                            p.DbContextOptions.UseSqlServer(p.ConnectionString);
+                    }
+                    else if (p.DatabaseProvider.ToLower() == EfCoreDatabaseProvider.Oracle.ToString().ToLower())
+                    {
+                        if (p.ExistingConnection != null)
+                            p.DbContextOptions.UseOracle(p.ExistingConnection);
+                        else
+                            p.DbContextOptions.UseOracle(p.ConnectionString);
+                    }
+                    else
+                    {
+                        throw new Exception($"数据库类型配置不正确{p.DatabaseProvider.ToLower()}");
+                    }
 
+                });
+                options.Configure(opt =>
+                {
+                });
+            });
             Configure<AbpUnitOfWorkDefaultOptions>(options =>
             {
                 options.IsTransactional = true;
                 options.IsolationLevel = IsolationLevel.ReadCommitted;
             });
             // 
-            services.AddAbpDbContext<AbpDbContext>(p =>
-            {
-                if (p.DatabaseProvider.ToLower() == EfCoreDatabaseProvider.MySql.ToString().ToLower())
-                {
-                    if (p.ExistingConnection != null)
-                        p.DbContextOptions.UseMySQL(p.ExistingConnection);
-                    else
-                        p.DbContextOptions.UseMySQL(p.ConnectionString);
-                }
-                else if (p.DatabaseProvider.ToLower() == EfCoreDatabaseProvider.SqlServer.ToString().ToLower())
-                {
-                    if (p.ExistingConnection != null)
-                        p.DbContextOptions.UseSqlServer(p.ExistingConnection);
-                    else
-                        p.DbContextOptions.UseSqlServer(p.ConnectionString);
-                }
-                else if (p.DatabaseProvider.ToLower() == EfCoreDatabaseProvider.Oracle.ToString().ToLower())
-                {
-                    if (p.ExistingConnection != null)
-                        p.DbContextOptions.UseOracle(p.ExistingConnection);
-                    else
-                        p.DbContextOptions.UseOracle(p.ConnectionString);
-                }
-                else
-                {
-                    throw new Exception($"数据库类型配置不正确{p.DatabaseProvider.ToLower()}");
-                }
-            });
+            //services.AddAbpDbContext<AbpDbContext>(p =>
+            //{
+            //    if (p.DatabaseProvider.ToLower() == EfCoreDatabaseProvider.MySql.ToString().ToLower())
+            //    {
+            //        if (p.ExistingConnection != null)
+            //            p.DbContextOptions.UseMySQL(p.ExistingConnection);
+            //        else
+            //            p.DbContextOptions.UseMySQL(p.ConnectionString);
+            //    }
+            //    else if (p.DatabaseProvider.ToLower() == EfCoreDatabaseProvider.SqlServer.ToString().ToLower())
+            //    {
+            //        if (p.ExistingConnection != null)
+            //            p.DbContextOptions.UseSqlServer(p.ExistingConnection);
+            //        else
+            //            p.DbContextOptions.UseSqlServer(p.ConnectionString);
+            //    }
+            //    else if (p.DatabaseProvider.ToLower() == EfCoreDatabaseProvider.Oracle.ToString().ToLower())
+            //    {
+            //        if (p.ExistingConnection != null)
+            //            p.DbContextOptions.UseOracle(p.ExistingConnection);
+            //        else
+            //            p.DbContextOptions.UseOracle(p.ConnectionString);
+            //    }
+            //    else
+            //    {
+            //        throw new Exception($"数据库类型配置不正确{p.DatabaseProvider.ToLower()}");
+            //    }
+            //});
             
             Configure<DataStateOptions>(options =>
             {

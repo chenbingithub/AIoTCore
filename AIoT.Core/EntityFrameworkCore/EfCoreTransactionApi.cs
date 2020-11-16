@@ -12,14 +12,14 @@ namespace AIoT.Core.EntityFrameworkCore
     public class EfCoreTransactionApi : ITransactionApi, ISupportsRollback
     {
         public IDbContextTransaction DbContextTransaction { get; }
-        public AbpDbContext StarterDbContext { get; }
-        public List<AbpDbContext> AttendedDbContexts { get; }
+        public DbContext StarterDbContext { get; }
+        public List<DbContext> AttendedDbContexts { get; }
 
-        public EfCoreTransactionApi(IDbContextTransaction dbContextTransaction, AbpDbContext starterDbContext)
+        public EfCoreTransactionApi(IDbContextTransaction dbContextTransaction, DbContext starterDbContext)
         {
             DbContextTransaction = dbContextTransaction;
             StarterDbContext = starterDbContext;
-            AttendedDbContexts = new List<AbpDbContext>();
+            AttendedDbContexts = new List<DbContext>();
         }
 
         public void Commit()

@@ -10,7 +10,7 @@ namespace AIoT.Core.Repository
     public class EfRepository<TDbContext, TEntity> :
         EfWriteRepository<TDbContext, TEntity>,
         IRepository<TEntity>
-        where TDbContext : AbpDbContext
+        where TDbContext : DbContext
         where TEntity : class, IEntity
     {
         /// <inheritdoc />
@@ -23,7 +23,7 @@ namespace AIoT.Core.Repository
     public class EfRepository<TDbContext, TEntity, TKey> :
         EfWriteRepository<TDbContext, TEntity, TKey>,
         IRepository<TEntity, TKey>
-        where TDbContext : AbpDbContext
+        where TDbContext : DbContext
         where TEntity : class, IEntity<TKey>
     {
         /// <inheritdoc />

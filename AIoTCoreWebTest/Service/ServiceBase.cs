@@ -1,5 +1,6 @@
 ﻿using AIoT.Core.EntityFrameworkCore;
 using AIoT.Core.Uow;
+using AIoTCoreWebTest.Service;
 using Volo.Abp.DependencyInjection;
 
 namespace AIoT.Core.Service
@@ -18,7 +19,7 @@ namespace AIoT.Core.Service
 
         public string Test()
         {
-           var db= _contextProvider.GetDbContext<AbpDbContext>();
+           var db= _contextProvider.GetDbContext<EfDbContext>();
            return "ok";
         }
     }

@@ -6,6 +6,7 @@ using AIoT.Core.EntityFrameworkCore;
 using AIoT.Core.Enums;
 using AIoT.Core.Service;
 using AIoT.Core.Uow;
+using AIoTCoreWebTest.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -34,14 +35,14 @@ namespace AIoTCoreWebTest.Controllers
         [HttpGet]
         public string Index1()
         {
-           var db= _contextProvider.GetDbContext<AbpDbContext>(EfCoreDatabaseProvider.MySql);
+           var db= _contextProvider.GetDbContext<EfDbContext>(EfCoreDatabaseProvider.MySql);
           var ds= db.Products.ToList();
             return "ok";
         }
         [HttpGet]
         public string Index2()
         {
-            var db = _contextProvider.GetDbContext<AbpDbContext>(EfCoreDatabaseProvider.MySql);
+            var db = _contextProvider.GetDbContext<EfDbContext>(EfCoreDatabaseProvider.MySql);
             db.Products.Add(new AIoT.Core.EntityFrameworkCore.Product()
             {
                 Id = 1,

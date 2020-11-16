@@ -1,11 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AIoT.Core.Uow;
+using Microsoft.EntityFrameworkCore;
 
 namespace AIoT.Core.EntityFrameworkCore
 {
     public class EfCoreDatabaseApi<TDbContext> : IDatabaseApi, ISupportsSavingChanges
-        where TDbContext : AbpDbContext
+        where TDbContext : DbContext
     {
         public TDbContext DbContext { get; }
 
