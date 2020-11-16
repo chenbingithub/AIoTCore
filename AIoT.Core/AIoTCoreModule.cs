@@ -65,6 +65,7 @@ namespace AIoT.Core
             var services = context.Services;
             var config = services.GetConfiguration();
             Configure<DbConnectionOptions>(config);
+            Configure<CustomOptions>(config.GetSection("CustomOptions"));
 
             Configure<AbpUnitOfWorkDefaultOptions>(options =>
             {

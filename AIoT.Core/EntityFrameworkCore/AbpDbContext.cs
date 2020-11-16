@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using Volo.Abp.DependencyInjection;
 
 namespace AIoT.Core.EntityFrameworkCore
@@ -12,6 +13,7 @@ namespace AIoT.Core.EntityFrameworkCore
         {
 
         }
+        public virtual DbSet<Product> Products { get; set; }
     }
 
 
@@ -24,5 +26,11 @@ namespace AIoT.Core.EntityFrameworkCore
         {
         }
     }
-    
+    [Table("product")]
+    public partial class Product
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+    }
 }

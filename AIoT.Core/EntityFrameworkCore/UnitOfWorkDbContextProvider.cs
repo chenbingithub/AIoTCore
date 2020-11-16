@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using AIoT.Core.DataFilter;
+using AIoT.Core.Enums;
 using AIoT.Core.Uow;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Volo.Abp;
 using Volo.Abp.DependencyInjection;
 
@@ -52,6 +54,32 @@ namespace AIoT.Core.EntityFrameworkCore
                 ));
 
             return ((EfCoreDatabaseApi<TDbContext>)databaseApi).DbContext;
+        }
+
+        public TDbContext GetDbContext<TDbContext>(EfCoreDatabaseProvider databaseProvider) where TDbContext : AbpDbContext
+        {
+            
+            var connectionStringName = $"{typeof(TDbContext).Name}_{databaseProvider.ToString()}";
+            string connectionString=String.Empty;
+            var options = _serviceProvider.GetService<IOptions<CustomOptions>>().Value;
+            if (databaseProvider == EfCoreDatabaseProvider.SqlServer)
+            {
+                connectionString = options.SqlServerConnectionString;
+            }else if (databaseProvider == EfCoreDatabaseProvider.MySql)
+            {
+                connectionString = options.MySqlConnectionString;
+            }
+            else if (databaseProvider == EfCoreDatabaseProvider.Oracle)
+            {
+                connectionString = options.OracleConnectionString;
+            }
+
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new Exception($"CustomOptions中没有配置{databaseProvider.ToString()}数据库字符串");
+            }
+            return CreateDbContext<TDbContext>(null, connectionStringName, connectionString, databaseProvider.ToString());
+
         }
 
         private TDbContext CreateDbContext<TDbContext>(IUnitOfWork unitOfWork, string connectionStringName, string connectionString,string databaseProvider)
