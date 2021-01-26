@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Security.Claims;
+using JetBrains.Annotations;
 
 namespace AIoT.Core.Runtime
 {
-    /// <summary>
-    /// 当前用户
-    /// </summary>
     public interface ICurrentUser
     {
+
         /// <summary>
         /// 获取用户Id
         /// </summary>
@@ -27,10 +26,14 @@ namespace AIoT.Core.Runtime
         /// 请求客户端
         /// </summary>
         string ClientId { get; }
+        [CanBeNull]
+        Claim FindClaim(string claimType);
 
-        /// <summary>
-        /// 获取当前会话的声明
-        /// </summary>
-        IEnumerable<Claim> Claims { get; }
+        [NotNull]
+        Claim[] FindClaims(string claimType);
+
+        [NotNull]
+        Claim[] GetAllClaims();
+
     }
 }
