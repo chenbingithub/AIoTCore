@@ -1,43 +1,24 @@
 ﻿using System.Collections.Generic;
-using AIoT.Core.DataFilter;
+using AIoT.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 
 namespace AIoT.EntityFramework.EntityFrameworkCore
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class DataStateKeys
-    {
-        /// <summary>
-        /// 是否为只读 bool
-        /// </summary>
-        public const string IsReadonly = "IsReadOnly";
-
-        ///// <summary>
-        ///// 软删除
-        ///// </summary>
-        //public const string SoftDelete = nameof(ISoftDelete);
-
-        /// <summary>
-        /// 数据权限开门
-        /// </summary>
-        public const string DataPermission = nameof(DataPermission);
-    }
+   
     /// <summary>
     /// 读写分享连接字符串提供程序
     /// </summary>
     public class ReadWriteConnectionStringResolver : EntityFramework.EntityFrameworkCore.IConnectionStringResolver, ITransientDependency
     {
         private readonly EntityFramework.EntityFrameworkCore.DbConnectionOptions _options;
-        private readonly IDataState _state;
-
+        private readonly IDataFilter _dataFilter;
         /// <inheritdoc />
-        public ReadWriteConnectionStringResolver(IOptions<EntityFramework.EntityFrameworkCore.DbConnectionOptions> options, IDataState state)
+        public ReadWriteConnectionStringResolver(IOptions<EntityFramework.EntityFrameworkCore.DbConnectionOptions> options, IDataFilter dataFilter)
         {
-            _state = state;
+            _dataFilter = dataFilter;
             _options = options.Value;
         }
 
@@ -48,7 +29,7 @@ namespace AIoT.EntityFramework.EntityFrameworkCore
             string con;
 
             // DbContext Connection String
-            if (_state.IsEnabled(DataStateKeys.IsReadonly))
+            if (_dataFilter.IsEnabled<IReadonly>())
             {
                 // 当前是否为只读模式
                 con = _options.ConnectionStrings.GetValueOrDefault($"{contextName}{EntityFramework.EntityFrameworkCore.ConnectionStrings.DefaultReadonlyConnectionStringName}");
@@ -58,7 +39,7 @@ namespace AIoT.EntityFramework.EntityFrameworkCore
             if (!string.IsNullOrWhiteSpace(con)) return con;
 
             // Default Connection String
-            if (_state.IsEnabled(DataStateKeys.IsReadonly))
+            if (_dataFilter.IsEnabled<IReadonly>())
             {
                 // 当前是否为只读模式
                 con = _options.ConnectionStrings.GetValueOrDefault(EntityFramework.EntityFrameworkCore.ConnectionStrings.DefaultReadonlyConnectionStringName);

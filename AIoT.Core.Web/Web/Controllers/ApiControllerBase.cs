@@ -9,6 +9,7 @@ namespace AIoT.Core.Web
     [ApiController]
     //[Consumes("application/json", "text/json")]
     [TypeFilter(typeof(HttpLogMiddleware.HttpLogFilter))]
+    [TypeFilter(typeof(ExceptionResultFilter))]
     public abstract class ApiControllerBase : ControllerBase, ITransientDependency
     {
     }

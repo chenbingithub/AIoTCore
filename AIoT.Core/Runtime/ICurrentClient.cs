@@ -1,10 +1,15 @@
 ﻿namespace AIoT.Core.Runtime
 {
     public interface ICurrentClient
-    {
-        string Id { get; }
+    {/// <summary>
+        /// 获取客户端浏览器信息
+        /// </summary>
+        string BrowserInfo { get; }
 
-        bool IsAuthenticated { get; }
-       
+        /// <summary>
+        /// 获取客户端Ip地址
+        /// </summary>
+        string ClientIpAddress { get; }
+
     }
 }

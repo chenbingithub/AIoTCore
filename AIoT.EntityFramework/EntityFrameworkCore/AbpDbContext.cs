@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using AIoT.Core;
 using AIoT.Core.Entities.Auditing;
 using AIoT.Core.Runtime;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +30,6 @@ namespace AIoT.EntityFramework.EntityFrameworkCore
         public AbpDbContext(DbContextOptions<TDbContext> options)
             : base(options)
         {
-            CurrentUser= NullCurrentUser.Instanse;
         }
         /// <inheritdoc />
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -152,7 +152,7 @@ namespace AIoT.EntityFramework.EntityFrameworkCore
             if (typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
             {
                 Expression<Func<TEntity, bool>> softDeleteFilter = e =>
-                    !AuditDataFilterEnabled(nameof(ISoftDelete)) || ((ISoftDelete)e).IsDeleted == false;
+                    !AuditDataFilterEnabled() || ((ISoftDelete)e).IsDeleted == false;
 
                 expression = softDeleteFilter.And(expression);
             }
@@ -163,9 +163,9 @@ namespace AIoT.EntityFramework.EntityFrameworkCore
         /// <summary>
         /// 指定类型数据权限是否启用
         /// </summary>
-        public virtual bool AuditDataFilterEnabled(string type)
+        public virtual bool AuditDataFilterEnabled()
         {
-            return DataState.IsEnabled(type);
+            return DataState.IsEnabled<ISoftDelete>();
         }
     }
 

@@ -8,6 +8,7 @@
     <ProjectReference Include="..\AIoT.Core\AIoT.Core.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.9" />
   </ItemGroup>
 
 </Project>

@@ -48,7 +48,7 @@ namespace AIoT.EntityFramework.EntityFrameworkCore
         [JsonIgnore]
         public string DatabaseProvider
         {
-            get => this.GetValueOrDefault(DefaultDatabaseProvider)?? EfCoreDatabaseProvider.SqlServer.ToString();
+            get => this.GetValueOrDefault(DefaultDatabaseProvider)?? "MySQL";
             set => this[DefaultDatabaseProvider] = value;
         }
     }

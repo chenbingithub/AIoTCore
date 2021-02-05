@@ -25,7 +25,7 @@ namespace AIoT.Core.Entities
     public abstract class Entity<TKey> : Entity, IEntity<TKey>
     {
         /// <inheritdoc/>
-        public virtual TKey Id { get; protected set; }
+        public virtual TKey Id { get;  set; }
 
         protected Entity()
         {

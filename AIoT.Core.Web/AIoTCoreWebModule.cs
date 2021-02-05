@@ -18,32 +18,30 @@ namespace AIoT.Core.Web
         /// <inheritdoc />
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            //context.Services.AddTransient<ExceptionResultFilter>();
-            //context.Services.AddTransient<ValidateResultFilter>();
-            context.Services.Replace(ServiceDescriptor.Transient<IPrincipalAccessor, AspNetCorePrincipalAccessor>());
-            AddAspNetServices(context.Services);
-
-            
+            context.Services.AddTransient<ExceptionResultFilter>();
+            context.Services.AddTransient<ValidateResultFilter>();
+   
+            context.Services.AddHttpContextAccessor();
+            context.Services.AddObjectAccessor<IApplicationBuilder>();
+            context.Services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
+            // Configure MVC
+            Configure<MvcOptions>(p =>
+            {
+                p.Filters.Add<ValidateResultFilter>();
+                p.InputFormatters.Add(new FormDataInputFormatter());
+            });
+            context.Services.AddControllers().AddNewtonsoftJson((options) =>
+            {
+                //options.SerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+                ////设置取消循环引用
+                //options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                //设置日期的格式为：yyyy-MM-dd
+                options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                //设置首字母小写
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            }); ;
         }
 
-        /// <inheritdoc />
-        public override void PostConfigureServices(ServiceConfigurationContext context)
-        {
-            //var jobServerOptions = context.Services.GetSingletonInstanceOrNull<BackgroundJobServerOptions>();
-            //if (jobServerOptions != null)
-            //{
-            //    jobServerOptions.Queues = jobServerOptions.Queues.Distinct().ToArray();
-            //}
-        }
-
-        private static void AddAspNetServices(IServiceCollection services)
-        {
-            services.AddHttpContextAccessor();
-            services.AddObjectAccessor<IApplicationBuilder>();
-
-            services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
-
-            //services.AddSingleton<IContentTypeProvider, FileExtensionContentTypeProvider>();
-        }
+       
     }
 }

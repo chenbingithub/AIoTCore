@@ -9,7 +9,8 @@ namespace AIoT.Core.Web.Runtime
     /// <summary>
     /// 从Http请求中获取客户端信息
     /// </summary>
-    public class HttpContextClientInfo : IClientInfo, ITransientDependency
+    [Dependency(ReplaceServices = true)]
+    public class HttpContextClientInfo : ICurrentClient, ITransientDependency
     {
         private readonly HttpContext _httpContext;
         private readonly IHttpContextAccessor _httpContextAccessor;

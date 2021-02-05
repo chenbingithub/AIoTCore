@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace AIoT.Core.Entities.Auditing
 {
@@ -20,13 +21,17 @@ namespace AIoT.Core.Entities.Auditing
         /// 删除者
         /// </summary>
         public virtual TUserId DeleterUserId { get; set; }
+        [StringLength(50)]
         public string LastModifierUserName { get; set; }
+        [StringLength(50)]
         public string DeleterUserName { get; set; }
+        [StringLength(50)]
         public string CreatorUserName { get; set; }
     }
 
     /// <inheritdoc cref="IDeletionAudited{TUserId}" />
-    public abstract class FullAuditedEntityName<TKey, TUserId> : ModificationAudited<TKey, TUserId>, IDeletionAudited<TUserId>
+    public abstract class FullAuditedEntityName<TKey, TUserId> : ModificationAudited<TKey, TUserId>, IDeletionAudited<TUserId>,
+         ICreationAuditedName, IDeletionAuditedName, IModificationAuditedName
     {
         /// <summary>
         /// 标记是否已删除
@@ -42,5 +47,11 @@ namespace AIoT.Core.Entities.Auditing
         /// 删除者
         /// </summary>
         public virtual TUserId DeleterUserId { get; set; }
+        [StringLength(50)]
+        public string LastModifierUserName { get; set; }
+        [StringLength(50)]
+        public string DeleterUserName { get; set; }
+        [StringLength(50)]
+        public string CreatorUserName { get; set; }
     }
 }

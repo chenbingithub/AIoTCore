@@ -9,5 +9,9 @@
     <ProjectReference Include="..\AIoT.Core\AIoT.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Service\" />
+  </ItemGroup>
+
 
 </Project>

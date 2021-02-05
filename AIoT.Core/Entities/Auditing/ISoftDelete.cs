@@ -1,4 +1,4 @@
-﻿namespace AIoT.Core.Entities.Auditing
+﻿namespace AIoT.Core
 {
     /// <summary>
     /// 标识是否软删除

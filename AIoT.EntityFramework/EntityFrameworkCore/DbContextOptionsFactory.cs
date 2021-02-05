@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using AIoT.Core.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

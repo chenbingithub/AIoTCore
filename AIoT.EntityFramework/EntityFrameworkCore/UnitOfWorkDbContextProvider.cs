@@ -1,35 +1,36 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AIoT.Core.DataFilter;
+using AIoT.Core;
 using AIoT.EntityFramework.Uow;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 
 namespace AIoT.EntityFramework.EntityFrameworkCore
 {
 
-    public class UnitOfWorkDbContextProvider : EntityFramework.EntityFrameworkCore.IDbContextProvider, ITransientDependency
+    public class UnitOfWorkDbContextProvider : IDbContextProvider, ITransientDependency
 
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-        private readonly EntityFramework.EntityFrameworkCore.IConnectionStringResolver _connectionStringResolver;
-        private readonly IDataState _dataState;
+        private readonly IConnectionStringResolver _connectionStringResolver;
+        private readonly IDataFilter _dataFilter;
         private readonly Dictionary<(Type Type, bool IsRead), DbContext>
             _cacheDbContext = new Dictionary<(Type Type, bool IsRead), DbContext>();
         public UnitOfWorkDbContextProvider(
             IUnitOfWorkManager unitOfWorkManager,
-            EntityFramework.EntityFrameworkCore.IConnectionStringResolver connectionStringResolver, IDataState dataState, IServiceProvider serviceProvider)
+            IConnectionStringResolver connectionStringResolver, IServiceProvider serviceProvider, IDataFilter dataFilter)
         {
             _unitOfWorkManager = unitOfWorkManager;
             _connectionStringResolver = connectionStringResolver;
-            _dataState = dataState;
             _serviceProvider = serviceProvider;
+            _dataFilter = dataFilter;
         }
 
         public TDbContext GetDbContext<TDbContext>() where TDbContext : DbContext
@@ -37,7 +38,7 @@ namespace AIoT.EntityFramework.EntityFrameworkCore
             var unitOfWork = _unitOfWorkManager.Current;
             if (unitOfWork == null)
             {
-                var cackeKey = (typeof(TDbContext), _dataState.IsEnabled(EntityFramework.EntityFrameworkCore.DataStateKeys.IsReadonly));
+                var cackeKey = (typeof(TDbContext), _dataFilter.IsEnabled<IReadonly>());
                 return (TDbContext)_cacheDbContext.GetOrAdd(cackeKey, p => CreateDbContext<TDbContext>(null));
                 //throw new AbpException("A DbContext can only be created inside a unit of work!");
             }
