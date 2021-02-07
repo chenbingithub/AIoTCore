@@ -19,10 +19,7 @@ namespace AIoT.Core.Data
         /// 默认只读连接字符串名称
         /// </summary>
         public const string DefaultReadonlyConnectionStringName = "Readonly";
-        /// <summary>
-        /// 默认数据库类型名称
-        /// </summary>
-        public const string DefaultDatabaseProvider = "DatabaseProvider";
+
         /// <summary>
         /// 获取默认连接字符串
         /// </summary>
@@ -41,13 +38,6 @@ namespace AIoT.Core.Data
             set => this[DefaultReadonlyConnectionStringName] = value;
         }
 
-        /// <summary>
-        /// 获取默认只读连接字符串
-        /// </summary>
-        public string DatabaseProvider
-        {
-            get => this.GetValueOrDefault(DefaultDatabaseProvider) ?? "MySQL";
-            set => this[DefaultDatabaseProvider] = value;
-        }
+ 
     }
 }

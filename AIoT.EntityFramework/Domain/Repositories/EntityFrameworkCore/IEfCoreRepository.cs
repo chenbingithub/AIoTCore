@@ -8,8 +8,11 @@ namespace AIoT.EntityFramework.Domain.Repositories.EntityFrameworkCore
         where TEntity : class, IEntity
     {
         DbContext DbContext { get; }
+        
 
         DbSet<TEntity> DbSet { get; }
+        DbContext ReadDbContext { get; }
+        DbSet<TEntity> ReadDbSet { get; }
     }
 
     public interface IEfCoreRepository<TEntity, TKey> : IEfCoreRepository<TEntity>, IRepository<TEntity, TKey>

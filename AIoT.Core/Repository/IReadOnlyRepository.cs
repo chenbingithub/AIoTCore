@@ -13,7 +13,7 @@ namespace AIoT.Core.Repository
 
         IQueryable<TEntity> WithDetails();
 
-        IQueryable<TEntity> WithDetails(params Expression<Func<TEntity, object>>[] propertySelectors);
+        IQueryable<TEntity> Including(params Expression<Func<TEntity, object>>[] propertySelectors);
     }
 
     public interface IReadOnlyRepository<TEntity, TKey> : IReadOnlyRepository<TEntity>, IReadOnlyBasicRepository<TEntity, TKey>

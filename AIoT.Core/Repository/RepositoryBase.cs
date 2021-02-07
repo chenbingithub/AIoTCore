@@ -10,12 +10,13 @@ using AIoT.Core.Entities;
 using AIoT.Core.Entities.Auditing;
 using AIoT.Core.Linq;
 using AIoT.Core.Uow;
+using Microsoft.EntityFrameworkCore;
 using Volo.Abp.Data;
 
 
 namespace AIoT.Core.Repository
 {
-    public abstract class RepositoryBase<TEntity> : BasicRepositoryBase<TEntity>, IRepository<TEntity>, IUnitOfWorkManagerAccessor
+    public abstract class RepositoryBase<TEntity> : BasicRepositoryBase<TEntity>, IRepository<TEntity>
         where TEntity : class, IEntity
     {
         public IDataFilter DataFilter { get; set; }
@@ -23,7 +24,7 @@ namespace AIoT.Core.Repository
 
         public IAsyncQueryableExecuter AsyncExecuter { get; set; }
 
-        public IUnitOfWorkManager UnitOfWorkManager { get; set; }
+      
 
         public virtual Type ElementType => GetQueryable().ElementType;
 
@@ -36,9 +37,10 @@ namespace AIoT.Core.Repository
             return GetQueryable();
         }
 
-        public virtual IQueryable<TEntity> WithDetails(params Expression<Func<TEntity, object>>[] propertySelectors)
+        public virtual IQueryable<TEntity> Including(params Expression<Func<TEntity, object>>[] propertySelectors)
         {
             return GetQueryable();
+            
         }
 
         IEnumerator IEnumerable.GetEnumerator()

@@ -12,7 +12,6 @@ namespace AIoT.Core.Repository
     public abstract class BasicRepositoryBase<TEntity> : 
         IBasicRepository<TEntity>, 
         IServiceProviderAccessor,
-        IUnitOfWorkEnabled,
         ITransientDependency
         where TEntity : class, IEntity
     {
