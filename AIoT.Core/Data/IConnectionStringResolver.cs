@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace Volo.Abp.Data
+namespace AIoT.Core.Data
 {
     public interface IConnectionStringResolver
     {

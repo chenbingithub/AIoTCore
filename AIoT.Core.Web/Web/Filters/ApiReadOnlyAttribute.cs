@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AIoT.Core.Data;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Data;

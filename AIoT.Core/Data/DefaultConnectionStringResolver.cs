@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Options;
 using Volo.Abp.DependencyInjection;
 
-namespace Volo.Abp.Data
+namespace AIoT.Core.Data
 {
     public class DefaultConnectionStringResolver : IConnectionStringResolver, ITransientDependency
     {

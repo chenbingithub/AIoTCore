@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Volo.Abp.Data
+namespace AIoT.Core.Data
 {
     public interface IDataFilter<TFilter>
         where TFilter : class

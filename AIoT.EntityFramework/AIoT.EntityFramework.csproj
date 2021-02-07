@@ -4,6 +4,15 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Abp\ObjectExtending\**" />
+    <Compile Remove="EntityFrameworkCore1\**" />
+    <EmbeddedResource Remove="Abp\ObjectExtending\**" />
+    <EmbeddedResource Remove="EntityFrameworkCore1\**" />
+    <None Remove="Abp\ObjectExtending\**" />
+    <None Remove="EntityFrameworkCore1\**" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.6" />
 		<PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.18" />
@@ -11,6 +20,9 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\AIoT.Core\AIoT.Core.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Abp\" />
 	</ItemGroup>
 
 </Project>

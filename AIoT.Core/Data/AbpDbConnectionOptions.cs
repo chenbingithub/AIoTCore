@@ -1,4 +1,4 @@
-﻿namespace Volo.Abp.Data
+﻿namespace AIoT.Core.Data
 {
     public class AbpDbConnectionOptions
     {

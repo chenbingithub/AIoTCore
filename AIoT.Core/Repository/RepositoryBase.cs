@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AIoT.Core.Data;
 using AIoT.Core.Entities;
 using AIoT.Core.Entities.Auditing;
 using AIoT.Core.Linq;

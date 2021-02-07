@@ -5,7 +5,7 @@ namespace AIoT.Core.Uow
 {
     public interface ISupportsSavingChanges
     {
-        void SaveChanges();
+        //void SaveChanges();
 
         Task SaveChangesAsync(CancellationToken cancellationToken = default);
     }

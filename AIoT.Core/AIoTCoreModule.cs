@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using AIoT.Core.Data;
 using AIoT.Core.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Modularity;

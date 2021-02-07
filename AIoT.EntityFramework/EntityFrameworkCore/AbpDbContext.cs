@@ -1,76 +1,227 @@
-Ôªøusing System;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using AIoT.Core;
-using AIoT.Core.Entities.Auditing;
-using AIoT.Core.Runtime;
+using AIoT.Core.Auditing;
+using AIoT.Core.Data;
+using AIoT.Core.Entities;
+using AIoT.Core.EventBus.Local;
+using AIoT.Core.Events;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Volo.Abp.Data;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.EntityFrameworkCore;
 
 namespace AIoT.EntityFramework.EntityFrameworkCore
 {
-    
-    public class AbpDbContext<TDbContext> : DbContext,ITransientDependency
+    public abstract class AbpDbContext<TDbContext> : DbContext, IAbpEfCoreDbContext, ITransientDependency
         where TDbContext : DbContext
     {
+
+        private const string ModelDatabaseProviderAnnotationKey = "_AIoT_DatabaseProvider";
+        protected virtual bool IsSoftDeleteFilterEnabled => DataFilter?.IsEnabled<ISoftDelete>() ?? false;
+
+
+
+        public IDataFilter DataFilter { get; set; }
+
         /// <summary>
-        /// Â±ûÊÄßÊ≥®ÂÖ• <see cref="ICurrentUser"/>
+        /// ±æµÿ ¬º˛◊‹œﬂ
         /// </summary>
-        public ICurrentUser CurrentUser { protected get; set; }
+        public ILocalEventBus LocalEventBus { protected get; set; } = NullLocalEventBus.Instanse;
+
         /// <summary>
-        /// Â±ûÊÄßÊ≥®ÂÖ• <see cref=""/>
+        ///  Ù–‘◊¢»Î <see cref="AuditPropertySetter"/>
         /// </summary>
-        public IDataFilter DataState { protected get; set; }
-        public AbpDbContext(DbContextOptions<TDbContext> options)
+        public IAuditPropertySetter AuditPropertySetter { get; set; }
+
+
+        public ILogger<AbpDbContext<TDbContext>> Logger { get; set; }
+
+        private static readonly MethodInfo ConfigureBasePropertiesMethodInfo
+            = typeof(AbpDbContext<TDbContext>)
+                .GetMethod(
+                    nameof(ConfigureBaseProperties),
+                    BindingFlags.Instance | BindingFlags.NonPublic
+                );
+
+
+        protected AbpDbContext(DbContextOptions<TDbContext> options)
             : base(options)
         {
+            Logger = NullLogger<AbpDbContext<TDbContext>>.Instance;
         }
-        /// <inheritdoc />
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            TrySetDatabaseProvider(modelBuilder);
+
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
-                ConfigureGlobalMethodInfo
+                ConfigureBasePropertiesMethodInfo
                     .MakeGenericMethod(entityType.ClrType)
-                    .Invoke(this, new object[] { modelBuilder, modelBuilder.Entity(entityType.ClrType) });
+                    .Invoke(this, new object[] { modelBuilder, entityType });
+
             }
         }
-        #region AuditÂÆ°ËÆ°
 
-        /// <inheritdoc />
-        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        protected virtual void TrySetDatabaseProvider(ModelBuilder modelBuilder)
         {
-            ApplyEntityChanges();
-
-            var result = base.SaveChanges(acceptAllChangesOnSuccess);
-
-            return result;
+            var provider = GetDatabaseProviderOrNull(modelBuilder);
+            if (provider != null)
+            {
+                modelBuilder.Model.SetAnnotation(ModelDatabaseProviderAnnotationKey, provider.Value);
+            }
         }
 
-        /// <inheritdoc />
-        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
+        protected virtual EfCoreDatabaseProvider? GetDatabaseProviderOrNull(ModelBuilder modelBuilder)
         {
-            ApplyEntityChanges();
-
-            var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-
-            return result;
+            switch (Database.ProviderName)
+            {
+                case "Microsoft.EntityFrameworkCore.SqlServer":
+                    return EfCoreDatabaseProvider.SqlServer;
+                case "Npgsql.EntityFrameworkCore.PostgreSQL":
+                    return EfCoreDatabaseProvider.PostgreSql;
+                case "Pomelo.EntityFrameworkCore.MySql":
+                    return EfCoreDatabaseProvider.MySql;
+                case "Oracle.EntityFrameworkCore":
+                case "Devart.Data.Oracle.Entity.EFCore":
+                    return EfCoreDatabaseProvider.Oracle;
+                case "Microsoft.EntityFrameworkCore.Sqlite":
+                    return EfCoreDatabaseProvider.Sqlite;
+                case "Microsoft.EntityFrameworkCore.InMemory":
+                    return EfCoreDatabaseProvider.InMemory;
+                case "FirebirdSql.EntityFrameworkCore.Firebird":
+                    return EfCoreDatabaseProvider.Firebird;
+                case "Microsoft.EntityFrameworkCore.Cosmos":
+                    return EfCoreDatabaseProvider.Cosmos;
+                default:
+                    return null;
+            }
         }
+
+        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+
+
+                ApplyEntityChanges();
+
+                var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+                var eventDatas = ChangeTracker.Entries().Select(p => (p.Entity, p.State, p.Metadata.ClrType)).ToList();
+                await PublishEventsAsync(eventDatas);
+
+                return result;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                ChangeTracker.AutoDetectChangesEnabled = true;
+            }
+        }
+
+        public async  Task<int> SaveChangesOnDbContextAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+           return await this.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        public virtual void Initialize(AbpEfCoreDbContextInitializationContext initializationContext)
+        {
+            if (initializationContext.UnitOfWork.Options.Timeout.HasValue &&
+                !Database.GetCommandTimeout().HasValue)
+            {
+                Database.SetCommandTimeout(initializationContext.UnitOfWork.Options.Timeout.Value);
+            }
+
+            ChangeTracker.CascadeDeleteTiming = CascadeTiming.OnSaveChanges;
+
+            ChangeTracker.Tracked += ChangeTracker_Tracked;
+        }
+
+        protected virtual void ChangeTracker_Tracked(object sender, EntityTrackedEventArgs e)
+        {
+            var entityType = e.Entry.Metadata.ClrType;
+            if (entityType == null)
+            {
+                return;
+            }
+
+
+            if (!e.FromQuery)
+            {
+                return;
+            }
+        }
+
+        
 
         /// <summary>
-        /// Â§ÑÁêÜÂÆû‰ΩìÂèòÊõ¥Êìç‰Ωú
+        /// ∑¢≤ºµΩEnitityEvent
+        /// </summary>
+        private async Task PublishEventsAsync(List<(object Entity, EntityState State, Type Type)> eventDatas)
+        {
+            foreach (var (entity, state, type) in eventDatas)
+            {
+                var method = _publishEventAsync.MakeGenericMethod(type);
+                await (Task)method.Invoke(this, new[] { entity, state });
+            }
+        }
+
+        private static readonly MethodInfo _publishEventAsync = typeof(AbpDbContext<>)
+            .GetMethod(nameof(PublishEventAsync), BindingFlags.Instance | BindingFlags.NonPublic);
+        private async Task PublishEventAsync<TEntity>(TEntity entity, EntityState state)
+        {
+            switch (state)
+            {
+                case EntityState.Added:
+                    await LocalEventBus.PublishAsync(new EntityCreatedEventData<TEntity>(entity));
+                    break;
+                case EntityState.Modified:
+                    await LocalEventBus.PublishAsync(new EntityUpdatedEventData<TEntity>(entity));
+                    break;
+                case EntityState.Deleted:
+                    await LocalEventBus.PublishAsync(new EntityDeletedEventData<TEntity>(entity));
+                    break;
+            }
+        }
+
+        //public virtual void Initialize(AbpEfCoreDbContextInitializationContext initializationContext)
+        //{
+        //    if (initializationContext.UnitOfWork.Options.Timeout.HasValue &&
+        //        //Database.IsRelational() &&
+        //        !Database.GetCommandTimeout().HasValue)
+        //    {
+        //        Database.SetCommandTimeout(TimeSpan.FromMilliseconds(initializationContext.UnitOfWork.Options.Timeout.Value));
+        //    }
+
+        //    ChangeTracker.CascadeDeleteTiming = CascadeTiming.OnSaveChanges;
+
+        //    ChangeTracker.Tracked += ChangeTracker_Tracked;
+        //}
+
+      
+      
+
+     
+
+        /// <summary>
+        /// ¥¶¿Ì µÃÂ±‰∏¸≤Ÿ◊˜
         /// </summary>
         protected virtual void ApplyEntityChanges()
         {
-            var entityEntries = ChangeTracker.Entries();
+            var entityEntries = ChangeTracker.Entries().ToList();
             foreach (var entry in entityEntries)
             {
                 switch (entry.State)
@@ -89,24 +240,24 @@ namespace AIoT.EntityFramework.EntityFrameworkCore
         }
 
         /// <summary>
-        /// Â§ÑÁêÜÊ∑ªÂä†ÂÆû‰ΩìÊìç‰Ωú
+        /// ¥¶¿ÌÃÌº” µÃÂ≤Ÿ◊˜
         /// </summary>
         protected virtual void ApplyForAddedEntity(EntityEntry entry)
         {
-            EntityAuditingHelper.SetCreationAuditProperties(entry.Entity, CurrentUser.UserId, CurrentUser.Name);
-            EntityAuditingHelper.SetModificationAuditProperties(entry.Entity, CurrentUser.UserId, CurrentUser.Name);
+            AuditPropertySetter?.SetCreationProperties(entry.Entity);
+            AuditPropertySetter?.SetModificationProperties(entry.Entity);
         }
 
         /// <summary>
-        /// Â§ÑÁêÜ‰øÆÊîπÂÆû‰ΩìÊìç‰Ωú
+        /// ¥¶¿Ì–ﬁ∏ƒ µÃÂ≤Ÿ◊˜
         /// </summary>
         protected virtual void ApplyForModifiedEntity(EntityEntry entry)
         {
-            EntityAuditingHelper.SetModificationAuditProperties(entry.Entity, CurrentUser.UserId, CurrentUser.Name);
+            AuditPropertySetter?.SetModificationProperties(entry.Entity);
         }
 
         /// <summary>
-        /// Â§ÑÁêÜÂà†Èô§ÂÆû‰ΩìÊìç‰Ωú
+        /// ¥¶¿Ì…æ≥˝ µÃÂ≤Ÿ◊˜
         /// </summary>
         protected virtual void ApplyForDeletedEntity(EntityEntry entry)
         {
@@ -115,59 +266,56 @@ namespace AIoT.EntityFramework.EntityFrameworkCore
 
             entry.Reload();
             ((ISoftDelete)entry.Entity).IsDeleted = true;
-            EntityAuditingHelper.SetDeletionAuditProperties(entry.Entity, CurrentUser.UserId, CurrentUser.Name);
-            EntityAuditingHelper.SetModificationAuditProperties(entry.Entity, CurrentUser.UserId, CurrentUser.Name);
+            AuditPropertySetter?.SetDeletionProperties(entry.Entity);
+            AuditPropertySetter?.SetModificationProperties(entry.Entity);
         }
 
-        #endregion
+       
+       
+        protected virtual void ConfigureBaseProperties<TEntity>(ModelBuilder modelBuilder )
+            where TEntity : class
+        {
+            
+            if (!typeof(IEntity).IsAssignableFrom(typeof(TEntity)))
+            {
+                return;
+            }
 
+          //  modelBuilder.Entity<TEntity>().ConfigureByConvention();
 
-        /// <summary>
-        /// ÂÖ®Â±ÄÂÆû‰ΩìÈÖçÁΩÆÊñπÊ≥ï
-        /// </summary>
-        private static readonly MethodInfo ConfigureGlobalMethodInfo = typeof(AbpDbContext<TDbContext>)
-            .GetTypeInfo().GetDeclaredMethod(nameof(CongifureGlobal));
+            ConfigureGlobalFilters<TEntity>(modelBuilder);
+        }
 
-        /// <summary>
-        /// ÂÖ®Â±ÄÂÆû‰ΩìÈÖçÁΩÆÊñπÊ≥ï
-        /// </summary>
-        public virtual void CongifureGlobal<TEntity>(ModelBuilder builder, EntityTypeBuilder entityBuilder)
+        protected virtual void ConfigureGlobalFilters<TEntity>(ModelBuilder modelBuilder )
             where TEntity : class
         {
             var filterExpression = CreateFilterExpression<TEntity>();
             if (filterExpression != null)
             {
-                entityBuilder.HasQueryFilter(filterExpression);
+                modelBuilder.Entity<TEntity>().HasQueryFilter(filterExpression);
             }
         }
 
-        /// <summary>
-        /// ÂàõÂª∫ÂÆû‰ΩìÂÖ®Â±ÄËøáÊª§Êù°‰ª∂
-        /// </summary>
+
+
+        
+
         protected virtual Expression<Func<TEntity, bool>> CreateFilterExpression<TEntity>()
             where TEntity : class
         {
-            
-            Expression<Func<TEntity, bool>> expression = a => true; 
+            Expression<Func<TEntity, bool>> expression = null;
+
             if (typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
             {
-                Expression<Func<TEntity, bool>> softDeleteFilter = e =>
-                    !AuditDataFilterEnabled() || ((ISoftDelete)e).IsDeleted == false;
-
-                expression = softDeleteFilter.And(expression);
+                expression = e => !IsSoftDeleteFilterEnabled || !EF.Property<bool>(e, "IsDeleted");
             }
 
-           
+
             return expression;
         }
-        /// <summary>
-        /// ÊåáÂÆöÁ±ªÂûãÊï∞ÊçÆÊùÉÈôêÊòØÂê¶ÂêØÁî®
-        /// </summary>
-        public virtual bool AuditDataFilterEnabled()
-        {
-            return DataState.IsEnabled<ISoftDelete>();
-        }
+
+        
+
+        
     }
-
-
 }

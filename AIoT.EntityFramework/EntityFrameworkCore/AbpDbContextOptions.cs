@@ -1,47 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 using Volo.Abp;
 
 namespace AIoT.EntityFramework.EntityFrameworkCore
 {
     public class AbpDbContextOptions
     {
-        internal List<Action<EntityFramework.EntityFrameworkCore.AbpDbContextConfigurationContext>> DefaultPreConfigureActions { get; set; }
+        public List<Action<DependencyInjection.AbpDbContextConfigurationContext>> DefaultPreConfigureActions { get; set; }
 
-        internal Action<EntityFramework.EntityFrameworkCore.AbpDbContextConfigurationContext> DefaultConfigureAction { get; set; }
+        public Action<DependencyInjection.AbpDbContextConfigurationContext> DefaultConfigureAction { get; set; }
 
-        internal Dictionary<Type, List<object>> PreConfigureActions { get; set; }
+        public Dictionary<Type, List<object>> PreConfigureActions { get; set; }
 
-        internal Dictionary<Type, object> ConfigureActions { get; set; }
+        public Dictionary<Type, object> ConfigureActions { get; set; }
 
         public AbpDbContextOptions()
         {
-            DefaultPreConfigureActions = new List<Action<EntityFramework.EntityFrameworkCore.AbpDbContextConfigurationContext>>();
+            DefaultPreConfigureActions = new List<Action<DependencyInjection.AbpDbContextConfigurationContext>>();
             PreConfigureActions = new Dictionary<Type, List<object>>();
             ConfigureActions = new Dictionary<Type, object>();
         }
 
-        public void PreConfigure([NotNull] Action<EntityFramework.EntityFrameworkCore.AbpDbContextConfigurationContext> action)
+        public void PreConfigure([NotNull] Action<DependencyInjection.AbpDbContextConfigurationContext> action)
         {
             Check.NotNull(action, nameof(action));
 
             DefaultPreConfigureActions.Add(action);
         }
 
-        public void Configure([NotNull] Action<EntityFramework.EntityFrameworkCore.AbpDbContextConfigurationContext> action)
+        public void Configure([NotNull] Action<DependencyInjection.AbpDbContextConfigurationContext> action)
         {
             Check.NotNull(action, nameof(action));
 
             DefaultConfigureAction = action;
         }
 
-        public void PreConfigure<TDbContext>([NotNull] Action<EntityFramework.EntityFrameworkCore.AbpDbContextConfigurationContext<TDbContext>> action)
-            where TDbContext : EntityFramework.EntityFrameworkCore.AbpDbContext<TDbContext>
+        public void PreConfigure<TDbContext>([NotNull] Action<DependencyInjection.AbpDbContextConfigurationContext<TDbContext>> action)
+            where TDbContext : AbpDbContext<TDbContext>
         {
             Check.NotNull(action, nameof(action));
 
-            var actions = PreConfigureActions.GetValueOrDefault(typeof(TDbContext));
+            var actions = PreConfigureActions.GetOrDefault(typeof(TDbContext));
             if (actions == null)
             {
                 PreConfigureActions[typeof(TDbContext)] = actions = new List<object>();
@@ -50,8 +50,8 @@ namespace AIoT.EntityFramework.EntityFrameworkCore
             actions.Add(action);
         }
 
-        public void Configure<TDbContext>([NotNull] Action<EntityFramework.EntityFrameworkCore.AbpDbContextConfigurationContext<TDbContext>> action) 
-            where TDbContext : EntityFramework.EntityFrameworkCore.AbpDbContext<TDbContext>
+        public void Configure<TDbContext>([NotNull] Action<DependencyInjection.AbpDbContextConfigurationContext<TDbContext>> action) 
+            where TDbContext : AbpDbContext<TDbContext>
         {
             Check.NotNull(action, nameof(action));
 
