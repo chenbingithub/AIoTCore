@@ -5,7 +5,7 @@ using Volo.Abp.Modularity;
 namespace AIoT.RedisCache
 {
     [DependsOn(typeof(AIoTCoreModule))]
-    public class AIoTCoreWebModule : AbpModule
+    public class AIoTRedisCacheModule : AbpModule
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
