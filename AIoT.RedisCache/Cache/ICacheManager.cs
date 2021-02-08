@@ -1,4 +1,6 @@
-﻿namespace AIoT.Core.Cache
+﻿using AIoT.Core.Cache;
+
+namespace AIoT.RedisCache.Cache
 {
     /// <summary>
     /// 缓存管理

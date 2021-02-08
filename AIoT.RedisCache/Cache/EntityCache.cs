@@ -1,10 +1,19 @@
 ﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
+using AIoT.Core.Cache;
+using AIoT.Core.Entities;
+using AIoT.Core.EventBus.Local;
+using AIoT.Core.Events;
+using AIoT.Core.Repository;
+using AIoT.Core.Uow;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 
-//using StackExchange.Profiling;
 
-namespace AIoT.Core.Cache
+namespace AIoT.RedisCache.Cache
 {
     /// <summary>
     /// 实体缓存基类
@@ -50,16 +59,11 @@ namespace AIoT.Core.Cache
         /// </summary>
         protected IRepository<TEntity, TKey> Repository { get; }
 
-        /// <summary>
-        /// 工作单元
-        /// </summary>
-        public IUnitOfWorkManager UnitOfWorkManager { protected get; set; }
         
         /// <inheritdoc />
         [UnitOfWork]
         public async ValueTask<TCacheItem> GetAsync(TKey id)
         {
-            //using (MiniProfiler.Current.Step($"{GetType().Name}.GetAsync({id})"))
             {
                 return await InternalCache.GetOrAddAsync(GetCacheKey(id), async () => await GetFromDbAsync(id));
             }
@@ -75,8 +79,7 @@ namespace AIoT.Core.Cache
         #region ILocalEventHandler<IEntityChangedEventData<TEntity>>
 
         /// <inheritdoc />
-        async Task ILocalEventHandler<EntityChangedEventData<TEntity>>.HandleEventAsync(
-            EntityChangedEventData<TEntity> eventData)
+        public async Task HandleEventAsync(EntityChangedEventData<TEntity> eventData, CancellationToken cancellation)
         {
             if (eventData.Entity != null)
             {
@@ -99,10 +102,9 @@ namespace AIoT.Core.Cache
         /// </summary>
         protected virtual async Task<TCacheItem> GetFromDbAsync(TKey id)
         {
-            //using (UnitOfWorkManager.Current.DisableFilter(DataFilters.AgencyPermission, DataFilters.ParkPermission))
             {
                 var cacheItem = await Repository.Where(CreateGetEntityByIdExpression(id))
-                    .ProjectTo<TCacheItem>().FirstOrDefaultAsync();
+                    .ProjectTo<TCacheItem>(null).FirstOrDefaultAsync();
                 return cacheItem;
             }
         }
@@ -129,6 +131,8 @@ namespace AIoT.Core.Cache
 
             return Expression.Lambda<Func<TEntity, bool>>(body, p);
         }
+
+       
     }
 
     /// <summary>

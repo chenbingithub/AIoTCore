@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AIoT.Core.Cache;
 
-namespace AIoT.Core.Cache
+namespace AIoT.RedisCache.Cache
 {
     /// <summary>
     /// 实体集合缓存

@@ -1,4 +1,4 @@
-﻿namespace AIoT.Core.Cache.Internal
+﻿namespace AIoT.RedisCache.Cache.Internal
 {
     /// <summary>
     /// 本地缓存对像

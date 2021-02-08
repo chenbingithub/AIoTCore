@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace AIoT.Core.Cache
+namespace AIoT.RedisCache.Cache
 {
     /// <summary>
     /// 分布式集合缓存

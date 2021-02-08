@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AIoT.Core.Cache;
 
-namespace AIoT.Core.Cache
+namespace AIoT.RedisCache.Cache
 {
     /// <summary>
     /// 缓存扩展方法

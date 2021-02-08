@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using AIoT.Core.Cache;
+using AIoT.Core.Cache.Internal;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
-namespace AIoT.Core.Cache.Internal
+namespace AIoT.RedisCache.Cache.Internal
 {
     /// <summary>
     /// 分布式集合缓存实现

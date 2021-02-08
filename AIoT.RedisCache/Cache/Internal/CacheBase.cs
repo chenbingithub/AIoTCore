@@ -1,4 +1,5 @@
 ﻿using System;
+using AIoT.RedisCache.Cache;
 using Microsoft.Extensions.Caching.Memory;
 using Nito.AsyncEx;
 using StackExchange.Redis;
@@ -52,12 +53,12 @@ namespace AIoT.Core.Cache.Internal
         /// <summary>
         /// 缓存互斥锁
         /// </summary>
-        private static readonly AsyncLock _cacheLock = new AsyncLock();
+        private static readonly object _cacheLock = new object();
 
         /// <summary>
         /// 缓存互斥锁
         /// </summary>
-        protected AsyncLock CacheLock => _cacheLock;
+        protected object CacheLock => _cacheLock;
 
         /// <summary>
         /// 内存缓存

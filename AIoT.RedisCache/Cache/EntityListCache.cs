@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AIoT.Core.Entities;
+using AIoT.Core.EventBus.Local;
+using AIoT.Core.Events;
+using AIoT.Core.Repository;
+using AIoT.Core.Uow;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.DependencyInjection;
-using Volo.Abp.Domain.Entities;
-using Volo.Abp.Domain.Entities.Events;
-using Volo.Abp.Domain.Repositories;
-using Volo.Abp.EventBus;
-using Volo.Abp.Uow;
 
 //using StackExchange.Profiling;
 
-namespace AIoT.Core.Cache
+namespace AIoT.RedisCache.Cache
 {
     /// <summary>
     /// 使用分布式缓存实现 <see cref="IEntityCache{TCacheItem}"/>
@@ -49,44 +49,33 @@ namespace AIoT.Core.Cache
         /// </summary>
         protected IRepository<TEntity, TKey> Repository { get; }
 
-        /// <summary>
-        /// 工作单元
-        /// </summary>
-        public IUnitOfWorkManager UnitOfWorkManager { protected get; set; }
+
 
         /// <inheritdoc />
         [UnitOfWork]
         public async ValueTask<TCacheItem> GetAsync(TKey id)
         {
-            //using (MiniProfiler.Current.Step($"{GetType().Name}.GetAsync({id})"))
-            {
                 await GetFromCacheOrDbAsync();
                 return await InternalCache.GetAsync(GetCacheKey(), id);
-            }
         }
 
         /// <inheritdoc />
         [UnitOfWork]
         public async ValueTask<IEnumerable<TCacheItem>> GetAllAsync()
         {
-            //using (MiniProfiler.Current.Step($"{GetType().Name}.GetAllAsync()"))
-            {
                 await GetFromCacheOrDbAsync();
                 return await InternalCache.GetAllAsync(GetCacheKey());
-            }
         }
 
         /// <inheritdoc />
         [UnitOfWork]
         public async ValueTask<IEnumerable<TCacheItem>> GetAllAsync(IEnumerable<TKey> ids)
         {
-            //using (MiniProfiler.Current.Step($"{GetType().Name}.GetAllAsync(ids)"))
-            {
+            
                 var data = await GetFromCacheOrDbAsync();
                 if (data == null) return default;
 
                 return await InternalCache.GetAllAsync(GetCacheKey(), ids);
-            }
         }
 
         /// <summary>
@@ -94,10 +83,7 @@ namespace AIoT.Core.Cache
         /// </summary>
         protected virtual async Task<IReadOnlyDictionary<TKey, TCacheItem>> GetFromCacheOrDbAsync()
         {
-            //using (UnitOfWorkManager.Current.DisableFilter(DataFilters.AgencyPermission, DataFilters.ParkPermission))
-            {
-                return await InternalCache.GetOrAddAsync(GetCacheKey(), async () => await GetFromDbAsync());
-            }
+            return await InternalCache.GetOrAddAsync(GetCacheKey(), async () => await GetFromDbAsync());
         }
 
         /// <summary>
@@ -105,7 +91,7 @@ namespace AIoT.Core.Cache
         /// </summary>
         protected virtual async Task<IDictionary<TKey, TCacheItem>> GetFromDbAsync()
         {
-            var cacheItems = await Repository.ProjectTo<TCacheItem>()
+            var cacheItems = await Repository.ProjectTo<TCacheItem>(null)
                 .ToDictionaryAsync(GetKeyByCacheItem);
             return cacheItems;
         }
@@ -138,13 +124,15 @@ namespace AIoT.Core.Cache
         /// <summary>
         /// 订阅实体变更事件，清除缓存数据
         /// </summary>
-        async Task ILocalEventHandler<EntityChangedEventData<TEntity>>.HandleEventAsync(EntityChangedEventData<TEntity> eventData)
+        public async Task HandleEventAsync(EntityChangedEventData<TEntity> eventData, CancellationToken cancellation)
         {
             if (eventData.Entity != null)
             {
                 await OnEntityChanged(eventData.Entity);
             }
         }
+
+      
     }
 
     /// <summary>

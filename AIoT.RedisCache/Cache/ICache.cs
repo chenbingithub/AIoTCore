@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AIoT.RedisCache.Cache;
 
 namespace AIoT.Core.Cache
 {

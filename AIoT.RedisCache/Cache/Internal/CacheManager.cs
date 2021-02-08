@@ -1,10 +1,11 @@
-﻿using AIoT.RedisCache.Cache.Internal;
+﻿using AIoT.Core.Cache;
+using AIoT.Core.Cache.Internal;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using Volo.Abp.DependencyInjection;
 
-namespace AIoT.Core.Cache.Internal
+namespace AIoT.RedisCache.Cache.Internal
 {
     /// <summary>
     /// 缓存管理

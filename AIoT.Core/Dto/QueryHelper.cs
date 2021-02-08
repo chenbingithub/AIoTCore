@@ -12,7 +12,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AIoT.Core.Entities;
 using AIoT.Core.Enums;
-using AIoT.Core.Repository;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,11 +31,11 @@ namespace AIoT.Core.Dto
         /// <param name="source"></param>
         /// <param name="query">查询条件</param>
         /// <param name="cancellationToken"></param>
-        public static Task<TDto> FirstOrDefaultAsync<TEntity, TDto>(this IRepository<TEntity> repository, 
+        public static Task<TDto> FirstOrDefaultAsync<TEntity, TDto>(this IQueryable<TEntity> source, 
             IQuery query, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
-            var data = repository.Where(query).ProjectTo<TDto>(null);
+            var data = source.Where(query).ProjectTo<TDto>(null);
 
             if (query is ISortInfo sort)
             {
@@ -54,11 +53,11 @@ namespace AIoT.Core.Dto
         /// <param name="source"></param>
         /// <param name="query">查询条件</param>
         /// <param name="cancellationToken"></param>
-        public static Task<TDto> FirstOrDefaultAsync<TEntity, TDto>(this IRepository<TEntity> repository, 
+        public static Task<TDto> FirstOrDefaultAsync<TEntity, TDto>(this IQueryable<TEntity> source, 
             Expression<Func<TEntity, bool>> query, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
-            var data = repository.Where(query).ProjectTo<TDto>(null);
+            var data = source.Where(query).ProjectTo<TDto>(null);
             return data.FirstOrDefaultAsync(cancellationToken);
         }
 
@@ -73,11 +72,11 @@ namespace AIoT.Core.Dto
         /// <param name="sort">排序</param>
         /// <param name="defaultSort">默认排序</param>
         /// <param name="cancellationToken"></param>
-        public static Task<List<TDto>> ToListAsync<TEntity, TDto>(this IRepository<TEntity> repository, 
+        public static Task<List<TDto>> ToListAsync<TEntity, TDto>(this IQueryable<TEntity> source, 
             IQuery query, ISortInfo sort, string defaultSort = null, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
-            var data = repository.Where(query).ProjectTo<TDto>(null).OrderBy(sort, defaultSort);
+            var data = source.Where(query).ProjectTo<TDto>(null).OrderBy(sort, defaultSort);
             return data.ToListAsync(cancellationToken);
         }
 
@@ -91,11 +90,11 @@ namespace AIoT.Core.Dto
         /// <param name="sort">排序</param>
         /// <param name="defaultSort">默认排序</param>
         /// <param name="cancellationToken"></param>
-        public static Task<List<TDto>> ToListAsync<TEntity, TDto>(this IRepository<TEntity> repository, 
+        public static Task<List<TDto>> ToListAsync<TEntity, TDto>(this IQueryable<TEntity> source, 
             Expression<Func<TEntity, bool>> query, ISortInfo sort, string defaultSort = null, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
-            var data = repository.Where(query).ProjectTo<TDto>(null).OrderBy(sort, defaultSort);
+            var data = source.Where(query).ProjectTo<TDto>(null).OrderBy(sort, defaultSort);
             return data.ToListAsync(cancellationToken);
         }
 
@@ -108,11 +107,11 @@ namespace AIoT.Core.Dto
         /// <param name="sort">排序</param>
         /// <param name="defaultSort">默认排序</param>
         /// <param name="cancellationToken"></param>
-        public static Task<List<TDto>> ToListAsync<TEntity, TDto>(this IRepository<TEntity> repository, 
+        public static Task<List<TDto>> ToListAsync<TEntity, TDto>(this IQueryable<TEntity> source, 
             ISortInfo sort, string defaultSort = null, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
-            var data = repository.ProjectTo<TDto>(null).OrderBy(sort, defaultSort);
+            var data = source.ProjectTo<TDto>(null).OrderBy(sort, defaultSort);
             return data.ToListAsync(cancellationToken);
         }
 
@@ -124,11 +123,11 @@ namespace AIoT.Core.Dto
         /// <param name="source"></param>
         /// <param name="query">查询条件</param>
         /// <param name="cancellationToken"></param>
-        public static Task<List<TDto>> ToListAsync<TEntity, TDto>(this IRepository<TEntity> repository, 
+        public static Task<List<TDto>> ToListAsync<TEntity, TDto>(this IQueryable<TEntity> source, 
             IQuery query, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
-            var data = repository.Where(query).ProjectTo<TDto>(null);
+            var data = source.Where(query).ProjectTo<TDto>(null);
             return data.ToListAsync(cancellationToken);
         }
 
@@ -142,11 +141,11 @@ namespace AIoT.Core.Dto
         /// <param name="defaultSort">默认排序</param>
         /// <param name="sortByEntity">是否按实体字段排序</param>
         /// <param name="cancellationToken"></param>
-        public static Task<PageResult<TDto>> ToPageResultAsync<TEntity, TDto>(this IRepository<TEntity> repository, 
+        public static Task<PageResult<TDto>> ToPageResultAsync<TEntity, TDto>(this IQueryable<TEntity> source, 
             IPageQuery query, string defaultSort = null, bool sortByEntity = false, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
-            return ToPageResultAsync<TEntity, TDto>(repository, query, query, defaultSort, sortByEntity, cancellationToken);
+            return ToPageResultAsync<TEntity, TDto>(source, query, query, defaultSort, sortByEntity, cancellationToken);
         }
 
         /// <summary>
@@ -160,7 +159,7 @@ namespace AIoT.Core.Dto
         /// <param name="defaultSort">默认排序</param>
         /// <param name="sortByEntity">是否按实体字段排序</param>
         /// <param name="cancellationToken"></param>
-        public static async Task<PageResult<TDto>> ToPageResultAsync<TEntity, TDto>(this IRepository<TEntity> repository, 
+        public static async Task<PageResult<TDto>> ToPageResultAsync<TEntity, TDto>(this IQueryable<TEntity> source, 
             IQuery query, IPageSortInfo page, string defaultSort = null, bool sortByEntity = false, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
@@ -172,7 +171,7 @@ namespace AIoT.Core.Dto
 
             if (sortByEntity)
             {
-                var data = repository.Where(query);
+                var data = source.Where(query);
                 result.TotalCount = await data.CountAsync(cancellationToken);
                 if (result.TotalCount > 0)
                 {
@@ -183,7 +182,7 @@ namespace AIoT.Core.Dto
             }
             else
             {
-                var data = repository.Where(query).ProjectTo<TDto>(null);
+                var data = source.Where(query).ProjectTo<TDto>(null);
                 result.TotalCount = await data.CountAsync(cancellationToken);
                 if (result.TotalCount > 0)
                 {
@@ -204,7 +203,7 @@ namespace AIoT.Core.Dto
         /// <param name="page">分页信息</param>
         /// <param name="defaultSort">默认排序</param>
         /// <param name="cancellationToken"></param>
-        public static async Task<PageResult<TEntity>> ToPageResultAsync<TEntity>(this IRepository<TEntity> repository, 
+        public static async Task<PageResult<TEntity>> ToPageResultAsync<TEntity>(this IQueryable<TEntity> source, 
             IPageSortInfo page, string defaultSort = null, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
@@ -213,10 +212,10 @@ namespace AIoT.Core.Dto
             var pageSize = Math.Max(1, page.PageSize);
 
             var result = new PageResult<TEntity>() { PageIndex = pageIndex, PageSize = pageSize };
-            result.TotalCount = await repository.CountAsync(cancellationToken);
+            result.TotalCount = await source.CountAsync(cancellationToken);
             if (result.TotalCount > 0)
             {
-                var mapData = repository.OrderBy(page, defaultSort);
+                var mapData = source.OrderBy(page, defaultSort);
                 result.Data = await mapData.Skip(pageSize * (pageIndex - 1))
                     .Take(pageSize).ToListAsync(cancellationToken);
             }
@@ -229,32 +228,32 @@ namespace AIoT.Core.Dto
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="query"></param>
-        public static IQueryable<TEntity> Where<TEntity>(this IRepository<TEntity> repository,  IQuery query)
+        public static IQueryable<TEntity> Where<TEntity>(this IQueryable<TEntity> source,  IQuery query)
             where TEntity : class, IEntity
         {
             var filter = query?.GetFilter<TEntity>();
             if (filter != null)
-                return repository.Where(filter);
-            return repository.AsQueryable();
+                return source.Where(filter);
+            return source.AsQueryable();
         }
 
         /// <summary>
         /// 分页查询
         /// </summary>
-        public static IQueryable<TEntity> PageBy<TEntity>(this IRepository<TEntity> repository,  IPageSortInfo page, string defaultSort = null)
+        public static IQueryable<TEntity> PageBy<TEntity>(this IQueryable<TEntity> source,  IPageSortInfo page, string defaultSort = null)
             where TEntity : class, IEntity
         {
             page = page ?? new PageSortInfo();
             var pageIndex = Math.Max(0, page.PageIndex);
             var pageSize = Math.Max(1, page.PageSize);
 
-            return repository.OrderBy(page, defaultSort).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+            return source.OrderBy(page, defaultSort).Skip((pageIndex - 1) * pageSize).Take(pageSize);
         }
 
         /// <summary>
         /// 分页查询
         /// </summary>
-        public static async Task<PageResult<TDto>> PageAsync<TEntity, TDto>(this IRepository<TEntity> repository,  IPageSortInfo page, string defaultSort = null, CancellationToken cancellationToken = default)
+        public static async Task<PageResult<TDto>> PageAsync<TEntity, TDto>(this IQueryable<TEntity> source,  IPageSortInfo page, string defaultSort = null, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
             page = page ?? new PageSortInfo();
@@ -262,7 +261,7 @@ namespace AIoT.Core.Dto
             var pageSize = Math.Max(1, page.PageSize);
 
             var result = new PageResult<TDto>() { PageIndex = pageIndex, PageSize = pageSize };
-            var data = repository.AsQueryable();
+            var data = source.AsQueryable();
             result.TotalCount = await data.CountAsync(cancellationToken);
             if (result.TotalCount > 0)
             {

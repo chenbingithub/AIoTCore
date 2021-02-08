@@ -5,11 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Abp\ObjectExtending\**" />
     <Compile Remove="EntityFrameworkCore1\**" />
-    <EmbeddedResource Remove="Abp\ObjectExtending\**" />
     <EmbeddedResource Remove="EntityFrameworkCore1\**" />
-    <None Remove="Abp\ObjectExtending\**" />
     <None Remove="EntityFrameworkCore1\**" />
   </ItemGroup>
 
@@ -20,9 +17,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\AIoT.Core\AIoT.Core.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Abp\" />
 	</ItemGroup>
 
 </Project>

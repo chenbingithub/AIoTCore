@@ -39,7 +39,8 @@ namespace AIoT.RedisCache.Cache.Distributed
             _cachePrefix = options.Prefix ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(_cachePrefix))
             {
-                _cachePrefix = _cachePrefix.EnsureEndsWith(':');
+                _cachePrefix = _cachePrefix.EndsWith(":", StringComparison.Ordinal)? _cachePrefix:$"{_cachePrefix}:";
+                
             }
         }
 

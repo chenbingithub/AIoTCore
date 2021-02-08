@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AIoT.Core.Cache.Internal
+namespace AIoT.RedisCache.Cache.Internal
 {
     /// <summary>
     /// 元数据

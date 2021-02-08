@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AIoT.Core.Cache
+namespace AIoT.RedisCache.Cache
 {
     /// <summary>
     /// 缓存配置
