@@ -1,5 +1,8 @@
 ﻿using System;
 using AIoT.Core;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 using Volo.Abp.Modularity;
 
 namespace AIoT.RedisCache
@@ -9,7 +12,18 @@ namespace AIoT.RedisCache
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            base.ConfigureServices(context);
+            var config = context.Services.GetConfiguration();
+            // Redis单例模式
+            var redisConStr = config.GetConnectionString("Redis");
+            var redisConnect = ConnectionMultiplexer.Connect(redisConStr);
+            context.Services.AddSingleton<IConnectionMultiplexer>(redisConnect);
+
+            // 缓存
+            context.Services.AddRedisDistributedCache(p =>
+            {
+                p.Connection = redisConnect;
+                p.Prefix = "AIoT:Cache";
+            });
         }
 
     }
