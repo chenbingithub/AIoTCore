@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using AIoT.Core.Cache;
-using AIoT.Core.Cache.Internal;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using StackExchange.Redis;

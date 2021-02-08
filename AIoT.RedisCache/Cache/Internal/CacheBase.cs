@@ -1,10 +1,8 @@
 ﻿using System;
-using AIoT.RedisCache.Cache;
 using Microsoft.Extensions.Caching.Memory;
-using Nito.AsyncEx;
 using StackExchange.Redis;
 
-namespace AIoT.Core.Cache.Internal
+namespace AIoT.RedisCache.Cache.Internal
 {
     /// <summary>
     /// 缓存基类
@@ -50,15 +48,7 @@ namespace AIoT.Core.Cache.Internal
 
         #endregion
         
-        /// <summary>
-        /// 缓存互斥锁
-        /// </summary>
-        private static readonly object _cacheLock = new object();
-
-        /// <summary>
-        /// 缓存互斥锁
-        /// </summary>
-        protected object CacheLock => _cacheLock;
+   
 
         /// <summary>
         /// 内存缓存
@@ -92,7 +82,7 @@ namespace AIoT.Core.Cache.Internal
             Config = config ?? throw new ArgumentNullException(nameof(config));
             Options = Config.GetOrDefaultOption(CacheName);
 
-            RedisCache = redis.GetDatabase(config.DatabaseId);
+            RedisCache = redis.GetDatabase(config.Db);
             MemoryCache = memoryCache;
         }
         

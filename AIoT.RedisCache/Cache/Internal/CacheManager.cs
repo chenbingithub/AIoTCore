@@ -1,5 +1,4 @@
 ﻿using AIoT.Core.Cache;
-using AIoT.Core.Cache.Internal;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;

@@ -5,15 +5,14 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 
-//using StackExchange.Profiling;
 
 namespace AIoT.RedisCache.Cache.Distributed
 {
     /// <summary>
-    /// 重新实现 Microsoft.Extensions.Caching.Distributed.RedisCache
-    /// 原因：微软实现的 RedisCache 使用脚本方式（<see cref="IDatabase.ScriptEvaluate(string, RedisKey[], RedisValue[], CommandFlags)"/>）执行数据读写
-    ///      腾讯云服务提供的 Redis 不支持脚本方式的命令，所以重新以命令方式实现 <see cref="IDistributedCache"/>
-    /// </summary>
+ /// 重新实现 Microsoft.Extensions.Caching.Distributed.RedisCache
+ /// 原因：微软实现的 RedisCache 使用脚本方式（<see cref="IDatabase.ScriptEvaluate(string, RedisKey[], RedisValue[], CommandFlags)"/>）执行数据读写
+ ///      腾讯云服务提供的 Redis 不支持脚本方式的命令，所以重新以命令方式实现 <see cref="IDistributedCache"/>
+ /// </summary>
     public class RedisDistributedCache : IDistributedCache
     {
         private const string AbsoluteExpirationKey = "absexp";
@@ -24,8 +23,8 @@ namespace AIoT.RedisCache.Cache.Distributed
         private readonly IDatabase _cache;
         private readonly string _cachePrefix;
 
-        /// <inheritdoc />
-        public RedisDistributedCache(IOptions<RedisDistributedCacheOptions> optionsAccessor)
+        /// <inheritdoc cref="RedisDistributedCache" />
+        public RedisDistributedCache(IOptions<CacheOptions> optionsAccessor)
         {
             if (optionsAccessor == null)
             {
@@ -39,8 +38,7 @@ namespace AIoT.RedisCache.Cache.Distributed
             _cachePrefix = options.Prefix ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(_cachePrefix))
             {
-                _cachePrefix = _cachePrefix.EndsWith(":", StringComparison.Ordinal)? _cachePrefix:$"{_cachePrefix}:";
-                
+                _cachePrefix = _cachePrefix.EnsureEndsWith(':');
             }
         }
 
