@@ -4,11 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="EntityFrameworkCore1\**" />
-    <EmbeddedResource Remove="EntityFrameworkCore1\**" />
-    <None Remove="EntityFrameworkCore1\**" />
-  </ItemGroup>
+
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.6" />
