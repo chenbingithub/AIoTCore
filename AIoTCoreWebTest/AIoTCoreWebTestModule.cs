@@ -2,6 +2,9 @@ using System;
 using AIoT.Core;
 using AIoT.Core.Extensions;
 using AIoT.Core.Web;
+using AIoT.EntityFramework;
+using AIoT.EntityFramework.EntityFrameworkCore.DependencyInjection;
+using AIoTCoreWebTest.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,7 +13,7 @@ using Volo.Abp.Modularity;
 
 namespace AIoTCoreWebTest
 {
-    [DependsOn(typeof(AIoTCoreWebModule))]
+    [DependsOn(typeof(AIoTCoreWebModule),typeof(AbpEntityFrameworkCoreModule))]
     public class AIoTCoreWebTestModule:AbpModule
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
@@ -21,6 +24,7 @@ namespace AIoTCoreWebTest
             // Routing
             services.AddRouting();
             services.AddControllers();
+            services.AddAbpDbContext<MyDbContext>();
         }
 
         public override void OnApplicationInitialization(ApplicationInitializationContext context)

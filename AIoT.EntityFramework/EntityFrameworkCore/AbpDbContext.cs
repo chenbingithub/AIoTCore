@@ -13,6 +13,8 @@ using AIoT.Core.EventBus.Local;
 using AIoT.Core.Events;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Volo.Abp.DependencyInjection;
@@ -20,7 +22,7 @@ using Volo.Abp.EntityFrameworkCore;
 
 namespace AIoT.EntityFramework.EntityFrameworkCore
 {
-    public abstract class AbpDbContext<TDbContext> : DbContext, IAbpEfCoreDbContext, ITransientDependency
+    public abstract class AbpDbContext<TDbContext> : DbContext, IAbpEfCoreDbContext,ITransientDependency
         where TDbContext : DbContext
     {
 
@@ -62,7 +64,7 @@ namespace AIoT.EntityFramework.EntityFrameworkCore
         {
             base.OnModelCreating(modelBuilder);
 
-            TrySetDatabaseProvider(modelBuilder);
+           // TrySetDatabaseProvider(modelBuilder);
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
@@ -272,7 +274,7 @@ namespace AIoT.EntityFramework.EntityFrameworkCore
 
        
        
-        protected virtual void ConfigureBaseProperties<TEntity>(ModelBuilder modelBuilder )
+        protected virtual void ConfigureBaseProperties<TEntity>(ModelBuilder modelBuilder, IMutableEntityType mutableEntityType)
             where TEntity : class
         {
             
@@ -283,10 +285,10 @@ namespace AIoT.EntityFramework.EntityFrameworkCore
 
           //  modelBuilder.Entity<TEntity>().ConfigureByConvention();
 
-            ConfigureGlobalFilters<TEntity>(modelBuilder);
+            ConfigureGlobalFilters<TEntity>(modelBuilder, mutableEntityType);
         }
 
-        protected virtual void ConfigureGlobalFilters<TEntity>(ModelBuilder modelBuilder )
+        protected virtual void ConfigureGlobalFilters<TEntity>(ModelBuilder modelBuilder ,IMutableEntityType mutableEntityType)
             where TEntity : class
         {
             var filterExpression = CreateFilterExpression<TEntity>();

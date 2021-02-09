@@ -16,13 +16,9 @@ namespace AIoT.EntityFramework
         {
             Configure<AbpDbContextOptions>(options =>
             {
-                options.PreConfigure(opt =>
+                
+                options.Configure(opt =>
                 {
-                    opt.DbContextOptions
-                        .ConfigureWarnings(warnings =>
-                        {
-                            warnings.Ignore(CoreEventId.LazyLoadOnDisposedContextWarning);
-                        });
                     if (opt.ExistingConnection != null)
                         opt.DbContextOptions.UseMySQL(opt.ExistingConnection);
                     else
