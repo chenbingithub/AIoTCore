@@ -6,7 +6,7 @@ using AIoT.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.Reflection;
 
-namespace Volo.Abp.EntityFrameworkCore
+namespace AIoT.EntityFramework.EfCore
 {
     internal static class DbContextHelper
     {

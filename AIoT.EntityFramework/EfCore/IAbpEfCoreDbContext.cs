@@ -1,7 +1,5 @@
-﻿using AIoT.EntityFramework.EntityFrameworkCore;
-using Volo.Abp.EntityFrameworkCore;
-
-namespace AIoT.EntityFramework.EntityFrameworkCore
+﻿
+namespace AIoT.EntityFramework.EfCore
 {
     public interface IAbpEfCoreDbContext : IEfCoreDbContext
     {

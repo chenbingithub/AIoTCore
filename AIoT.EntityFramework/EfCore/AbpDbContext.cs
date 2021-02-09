@@ -14,13 +14,11 @@ using AIoT.Core.Events;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Volo.Abp.DependencyInjection;
-using Volo.Abp.EntityFrameworkCore;
 
-namespace AIoT.EntityFramework.EntityFrameworkCore
+namespace AIoT.EntityFramework.EfCore
 {
     public abstract class AbpDbContext<TDbContext> : DbContext, IAbpEfCoreDbContext,ITransientDependency
         where TDbContext : DbContext

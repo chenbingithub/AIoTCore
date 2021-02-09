@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using AIoT.Core;
 using AIoT.Core.Entities;
 using AIoT.Core.Repository;
-using AIoT.EntityFramework.EntityFrameworkCore;
+using AIoT.EntityFramework.EfCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace AIoT.EntityFramework.Repositories

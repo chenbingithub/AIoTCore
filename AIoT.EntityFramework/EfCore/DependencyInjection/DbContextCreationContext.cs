@@ -3,7 +3,7 @@ using System.Data.Common;
 using System.Threading;
 using Volo.Abp;
 
-namespace AIoT.EntityFramework.EntityFrameworkCore.DependencyInjection
+namespace AIoT.EntityFramework.EfCore.DependencyInjection
 {
     public class DbContextCreationContext
     {

@@ -5,10 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Volo.Abp;
-using Volo.Abp.Data;
-using Volo.Abp.EntityFrameworkCore;
 
-namespace AIoT.EntityFramework.EntityFrameworkCore.DependencyInjection
+namespace AIoT.EntityFramework.EfCore.DependencyInjection
 {
     public static class DbContextOptionsFactory
     {

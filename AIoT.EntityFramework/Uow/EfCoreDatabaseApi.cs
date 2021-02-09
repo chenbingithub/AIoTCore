@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AIoT.Core.Uow;
-using AIoT.EntityFramework.EntityFrameworkCore;
+using AIoT.EntityFramework.EfCore;
 
 namespace AIoT.EntityFramework.Uow
 {

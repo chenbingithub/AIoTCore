@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace AIoT.EntityFramework.EntityFrameworkCore
+namespace AIoT.EntityFramework.EfCore
 {
     internal static class DbContextExtensions
     {

@@ -1,6 +1,6 @@
 ﻿using AIoT.Core.Uow;
 
-namespace AIoT.EntityFramework.EntityFrameworkCore
+namespace AIoT.EntityFramework.EfCore
 {
     public class AbpEfCoreDbContextInitializationContext
     {

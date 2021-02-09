@@ -1,9 +1,8 @@
 ﻿using System;
 using AIoT.Core;
-using AIoT.EntityFramework.EntityFrameworkCore;
+using AIoT.EntityFramework.EfCore;
 using AIoT.EntityFramework.Uow;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Volo.Abp.Modularity;
 

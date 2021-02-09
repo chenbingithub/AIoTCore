@@ -1,4 +1,4 @@
-﻿namespace Volo.Abp.EntityFrameworkCore
+﻿namespace AIoT.EntityFramework.EfCore
 {
     public enum EfCoreDatabaseProvider
     {

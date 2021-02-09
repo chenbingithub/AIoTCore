@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Volo.Abp.DependencyInjection;
 
-namespace AIoT.EntityFramework.EntityFrameworkCore
+namespace AIoT.EntityFramework.EfCore
 {
     public class EfCoreAsyncQueryableProvider : IAsyncQueryableProvider, ITransientDependency
     {

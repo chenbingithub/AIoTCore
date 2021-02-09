@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 using AIoT.Core.Entities.Auditing;
-using AIoT.EntityFramework.EntityFrameworkCore;
+using AIoT.EntityFramework.EfCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace AIoTCoreWebTest.Service

@@ -5,9 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Volo.Abp.DependencyInjection;
-using Volo.Abp.EntityFrameworkCore;
 
-namespace AIoT.EntityFramework.EntityFrameworkCore.DependencyInjection
+namespace AIoT.EntityFramework.EfCore.DependencyInjection
 {
     public class AbpDbContextConfigurationContext : IServiceProviderAccessor
     {

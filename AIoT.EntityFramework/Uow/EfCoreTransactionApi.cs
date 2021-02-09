@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AIoT.Core.Uow;
-using AIoT.EntityFramework.EntityFrameworkCore;
+using AIoT.EntityFramework.EfCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
