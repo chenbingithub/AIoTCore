@@ -11,8 +11,7 @@ namespace AIoT.EntityFramework.Repositories
         
 
         DbSet<TEntity> DbSet { get; }
-        DbContext ReadDbContext { get; }
-        DbSet<TEntity> ReadDbSet { get; }
+
     }
 
     public interface IEfCoreRepository<TEntity, TKey> : IEfCoreRepository<TEntity>, IRepository<TEntity, TKey>

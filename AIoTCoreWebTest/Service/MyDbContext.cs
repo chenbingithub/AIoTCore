@@ -28,4 +28,17 @@ namespace AIoTCoreWebTest.Service
         [StringLength(50)]
         public string Description { get; set; }
     }
+
+    public class RoleDto
+    {
+        public string Id { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string Name { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string Code { get; set; }
+        [StringLength(50)]
+        public string Description { get; set; }
+    }
 }

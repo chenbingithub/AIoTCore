@@ -1,11 +1,11 @@
 using System;
 using AIoT.Core;
-using AIoT.Core.Extensions;
+using AIoT.Core.AutoMap;
 using AIoT.Core.Web;
 using AIoT.EntityFramework;
 using AIoT.EntityFramework.DependencyInjection;
-using AIoT.EntityFramework.EfCore.DependencyInjection;
 using AIoTCoreWebTest.Service;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,6 +26,12 @@ namespace AIoTCoreWebTest
             services.AddRouting();
             services.AddControllers();
             services.AddAbpDbContext<MyDbContext>();
+            context.Services.ConfigMapper(CreateDtoMappings);
+        }
+
+        private void CreateDtoMappings(IMapperConfigurationExpression s)
+        {
+            s.CreateMap<Role, RoleDto>();
         }
 
         public override void OnApplicationInitialization(ApplicationInitializationContext context)

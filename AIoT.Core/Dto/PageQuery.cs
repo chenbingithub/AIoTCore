@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using AIoT.Core.Extensions;
+using AIoT.Core.Repository;
 
 
 namespace AIoT.Core.Dto

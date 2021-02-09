@@ -22,23 +22,7 @@ namespace AIoT.EntityFramework.Repositories
         DbContext IEfCoreRepository<TEntity>.DbContext => DbContext.As<DbContext>();
 
         protected virtual TDbContext DbContext => _dbContextProvider.GetDbContext();
-        /// <summary>
-        /// 读库数据上下文
-        /// </summary>
-        public virtual DbContext ReadDbContext
-        {
-            get
-            {
-                using (DataFilter.Enable<IReadonly>())
-                {
-                    return _dbContextProvider.GetDbContext().As<DbContext>();
-                }
-            }
-        }
-        /// <summary>
-        /// 读库实体数据集
-        /// </summary>
-        public  virtual DbSet<TEntity> ReadDbSet => ReadDbContext.Set<TEntity>();
+   
 
         private readonly IDbContextProvider<TDbContext> _dbContextProvider;
 

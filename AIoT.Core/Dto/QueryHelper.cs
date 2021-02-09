@@ -10,12 +10,13 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using AIoT.Core.Dto;
 using AIoT.Core.Entities;
 using AIoT.Core.Enums;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace AIoT.Core.Dto
+namespace AIoT.Core.Repository
 {
 
     /// <summary>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AIoT.Core.Enums;
+using AIoT.Core.Repository;
 using AIoT.Core.Service;
 using AIoT.Core.Uow;
 using AIoTCoreWebTest.Service;
@@ -50,6 +51,29 @@ namespace AIoTCoreWebTest.Controllers
                 throw;
             }
           
+        }
+        public async Task<string> Index1()
+        {
+            try
+            {
+
+
+
+
+
+
+                var db = _serviceProvider.GetService<IRepository<Role>>();
+
+                var data=await db.FirstOrDefaultAsync<Role,RoleDto>(u=>u.Code== "string");
+                return $"ok";
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
     }
 }
