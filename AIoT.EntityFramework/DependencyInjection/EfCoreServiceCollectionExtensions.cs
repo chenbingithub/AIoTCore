@@ -1,5 +1,8 @@
-﻿using AIoT.EntityFramework.EfCore;
+﻿using System;
+using System.Collections.Generic;
+using AIoT.EntityFramework.EfCore;
 using AIoT.EntityFramework.EfCore.DependencyInjection;
+using AIoT.EntityFramework.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -16,9 +19,12 @@ namespace AIoT.EntityFramework.DependencyInjection
            // services.AddDbContext<TDbContext, TDbContext>(ServiceLifetime.Transient, ServiceLifetime.Transient);
 
             services.Replace(ServiceDescriptor.Transient(typeof(TDbContext), typeof(TDbContext)));
-
-            
+            //添加仓储
+            services.AddEfCoreRepository<TDbContext>();
             return services;
         }
+
+
+        
     }
 }
