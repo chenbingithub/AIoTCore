@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using AIoT.Core;
 using AIoT.Core.Data;
 using Microsoft.Extensions.Options;
-using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 
-namespace AIoT.EntityFramework.Uow.EntityFrameworkCore
+namespace AIoT.EntityFramework.Uow
 {
 
     /// <summary>

@@ -7,7 +7,7 @@ using AIoT.EntityFramework.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace AIoT.EntityFramework.Uow.EntityFrameworkCore
+namespace AIoT.EntityFramework.Uow
 {
     public class EfCoreTransactionApi : ITransactionApi, ISupportsRollback
     {

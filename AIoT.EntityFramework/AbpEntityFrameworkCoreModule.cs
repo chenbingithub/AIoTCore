@@ -1,7 +1,7 @@
 ﻿using System;
 using AIoT.Core;
 using AIoT.EntityFramework.EntityFrameworkCore;
-using AIoT.EntityFramework.Uow.EntityFrameworkCore;
+using AIoT.EntityFramework.Uow;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection.Extensions;

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AIoT.EntityFramework.Uow.EntityFrameworkCore
+namespace AIoT.EntityFramework.Uow
 {
 
     public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbContext>

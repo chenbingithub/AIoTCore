@@ -2,7 +2,7 @@ using AIoT.Core.Entities;
 using AIoT.Core.Repository;
 using Microsoft.EntityFrameworkCore;
 
-namespace AIoT.EntityFramework.Domain.Repositories.EntityFrameworkCore
+namespace AIoT.EntityFramework.Repositories
 {
     public interface IEfCoreRepository<TEntity> : IRepository<TEntity>
         where TEntity : class, IEntity

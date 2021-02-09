@@ -11,7 +11,7 @@ using AIoT.Core.Repository;
 using AIoT.EntityFramework.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace AIoT.EntityFramework.Domain.Repositories.EntityFrameworkCore
+namespace AIoT.EntityFramework.Repositories
 {
     public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IEfCoreRepository<TEntity>, IAsyncEnumerable<TEntity>
         where TDbContext : IEfCoreDbContext

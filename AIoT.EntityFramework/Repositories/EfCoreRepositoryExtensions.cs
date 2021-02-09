@@ -1,10 +1,9 @@
 ﻿using System;
 using AIoT.Core.Entities;
 using AIoT.Core.Repository;
-using AIoT.EntityFramework.Domain.Repositories.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace AIoT.EntityFramework.Domain.Repositories
+namespace AIoT.EntityFramework.Repositories
 {
     public static class EfCoreRepositoryExtensions
     {

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using AIoT.EntityFramework.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 
 namespace AIoT.EntityFramework.EntityFrameworkCore.DependencyInjection

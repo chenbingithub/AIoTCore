@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using AIoT.Core.Uow;
 using AIoT.EntityFramework.EntityFrameworkCore;
 
-namespace AIoT.EntityFramework.Uow.EntityFrameworkCore
+namespace AIoT.EntityFramework.Uow
 {
     public class EfCoreDatabaseApi<TDbContext> : IDatabaseApi, ISupportsSavingChanges
         where TDbContext : IEfCoreDbContext
