@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AIoT.Core.Dto;
 using AIoT.Core.Enums;
 using AIoT.Core.Repository;
 using AIoT.Core.Service;

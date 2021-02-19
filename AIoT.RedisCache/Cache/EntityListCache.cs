@@ -91,7 +91,7 @@ namespace AIoT.RedisCache.Cache
         /// </summary>
         protected virtual async Task<IDictionary<TKey, TCacheItem>> GetFromDbAsync()
         {
-            var cacheItems = await Repository.ProjectTo<TCacheItem>(null)
+            var cacheItems = await Repository.ProjectTo<TCacheItem>()
                 .ToDictionaryAsync(GetKeyByCacheItem);
             return cacheItems;
         }

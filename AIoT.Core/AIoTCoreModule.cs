@@ -4,10 +4,17 @@ using AIoT.Core.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Modularity;
 using AIoT.Core.Uow;
-using Volo.Abp;
 using Volo.Abp.Autofac;
 using Volo.Abp.Data;
-using Volo.Abp.Threading;
+using AutoMapper;
+using AutoMapper.Configuration;
+using System.Reflection;
+using AIoT.Core.Dto;
+using System.Linq.Expressions;
+using AIoT.Core.AutoMap;
+using System.Collections.Generic;
+using Volo.Abp.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace AIoT.Core
 {
@@ -23,10 +30,38 @@ namespace AIoT.Core
 
             
         }
-    
-
-    public override void ConfigureServices(ServiceConfigurationContext context)
+        private static bool _staticMapperInitialized;
+        private static readonly object _autoMapperSyncObj = new object();
+        /// <inheritdoc />
+        public override void PostConfigureServices(ServiceConfigurationContext context)
         {
+            var services = context.Services;
+
+            // AutoMapper
+            var config = new MapperConfigurationExpression();
+            var actions = services.GetObject<AutoMapperConfig>()?.MapActions;
+            if (actions != null)
+            {
+                foreach (var action in actions)
+                {
+                    action(config);
+                }
+            }
+            lock (_autoMapperSyncObj)
+            {
+                if (!_staticMapperInitialized)
+                {
+                    _staticMapperInitialized = true;
+                    Mapper.Initialize(config);
+                }
+            }
+            services.AddSingleton(Mapper.Instance);
+            services.RemoveAll<IObjectAccessor<AutoMapperConfig>>();
+        }
+
+
+        public override void ConfigureServices(ServiceConfigurationContext context)
+    {
 
             var services = context.Services;
             var config = services.GetConfiguration();
@@ -44,7 +79,37 @@ namespace AIoT.Core
                 });
             context.Services.AddSingleton(typeof(IDataFilter<>), typeof(DataFilter<>));
 
+            // 配置AutoMapper
+            services.ConfigMapper(ConfigMapFromAttribute);
+        }
+        /// <summary>
+        /// 配置 <see cref="MapFromAttribute"/> 映射
+        /// </summary>
+        private static void ConfigMapFromAttribute(IMapperConfigurationExpression config)
+        {
+            config.ForAllMaps((t, c) =>
+            {
+                var map = typeof(MemberConfigurationExpression<object, object, object>)
+                    .GetMethod("MapFromUntyped", BindingFlags.NonPublic | BindingFlags.Instance);
+                c.ForAllOtherMembers(memberOptions =>
+                {
+                    var member = memberOptions.DestinationMember;
+                    var att = member.GetCustomAttribute<MapFromAttribute>();
+                    if (att?.PropertyPath?.Length > 0)
+                    {
+                        var source = Expression.Parameter(t.SourceType);
+                        Expression body = source;
+                        foreach (var path in att.PropertyPath)
+                        {
+                            body = Expression.PropertyOrField(body, path);
+                        }
 
+                        var mapFromExpression = Expression.Lambda(body, source);
+
+                        map.Invoke(memberOptions, new object[] { mapFromExpression });
+                    }
+                });
+            });
         }
     }
    

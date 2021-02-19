@@ -16,7 +16,7 @@ using AIoT.Core.Enums;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace AIoT.Core.Repository
+namespace AIoT.Core.Dto
 {
 
     /// <summary>
@@ -36,7 +36,7 @@ namespace AIoT.Core.Repository
             IQuery query, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
-            var data = source.Where(query).ProjectTo<TDto>(null);
+            var data = source.Where(query).ProjectTo<TDto>();
 
             if (query is ISortInfo sort)
             {
@@ -58,7 +58,7 @@ namespace AIoT.Core.Repository
             Expression<Func<TEntity, bool>> query, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
-            var data = source.Where(query).ProjectTo<TDto>(null);
+            var data = source.Where(query).ProjectTo<TDto>();
             return data.FirstOrDefaultAsync(cancellationToken);
         }
 
@@ -77,7 +77,7 @@ namespace AIoT.Core.Repository
             IQuery query, ISortInfo sort, string defaultSort = null, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
-            var data = source.Where(query).ProjectTo<TDto>(null).OrderBy(sort, defaultSort);
+            var data = source.Where(query).ProjectTo<TDto>().OrderBy(sort, defaultSort);
             return data.ToListAsync(cancellationToken);
         }
 
@@ -95,7 +95,7 @@ namespace AIoT.Core.Repository
             Expression<Func<TEntity, bool>> query, ISortInfo sort, string defaultSort = null, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
-            var data = source.Where(query).ProjectTo<TDto>(null).OrderBy(sort, defaultSort);
+            var data = source.Where(query).ProjectTo<TDto>().OrderBy(sort, defaultSort);
             return data.ToListAsync(cancellationToken);
         }
 
@@ -112,7 +112,7 @@ namespace AIoT.Core.Repository
             ISortInfo sort, string defaultSort = null, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
-            var data = source.ProjectTo<TDto>(null).OrderBy(sort, defaultSort);
+            var data = source.ProjectTo<TDto>().OrderBy(sort, defaultSort);
             return data.ToListAsync(cancellationToken);
         }
 
@@ -128,7 +128,7 @@ namespace AIoT.Core.Repository
             IQuery query, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
-            var data = source.Where(query).ProjectTo<TDto>(null);
+            var data = source.Where(query).ProjectTo<TDto>();
             return data.ToListAsync(cancellationToken);
         }
 
@@ -178,12 +178,12 @@ namespace AIoT.Core.Repository
                 {
                     var mapData = data.OrderBy(page, defaultSort);
                     result.Data = await mapData.Skip(pageSize * (pageIndex - 1))
-                        .Take(pageSize).ProjectTo<TDto>(null).ToListAsync(cancellationToken);
+                        .Take(pageSize).ProjectTo<TDto>().ToListAsync(cancellationToken);
                 }
             }
             else
             {
-                var data = source.Where(query).ProjectTo<TDto>(null);
+                var data = source.Where(query).ProjectTo<TDto>();
                 result.TotalCount = await data.CountAsync(cancellationToken);
                 if (result.TotalCount > 0)
                 {
@@ -266,7 +266,7 @@ namespace AIoT.Core.Repository
             result.TotalCount = await data.CountAsync(cancellationToken);
             if (result.TotalCount > 0)
             {
-                var mapData = data.OrderBy(page, defaultSort).ProjectTo<TDto>(null);
+                var mapData = data.OrderBy(page, defaultSort).ProjectTo<TDto>();
                 result.Data = await mapData.Skip(pageSize * (pageIndex - 1))
                     .Take(pageSize).ToListAsync(cancellationToken);
             }

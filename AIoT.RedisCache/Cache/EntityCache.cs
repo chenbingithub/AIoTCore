@@ -104,7 +104,7 @@ namespace AIoT.RedisCache.Cache
         {
             {
                 var cacheItem = await Repository.Where(CreateGetEntityByIdExpression(id))
-                    .ProjectTo<TCacheItem>(null).FirstOrDefaultAsync();
+                    .ProjectTo<TCacheItem>().FirstOrDefaultAsync();
                 return cacheItem;
             }
         }
