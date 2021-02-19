@@ -70,6 +70,8 @@ namespace AIoT.EntityFramework.EfCore
                     .MakeGenericMethod(entityType.ClrType)
                     .Invoke(this, new object[] { modelBuilder, entityType });
 
+
+
             }
         }
 
@@ -107,17 +109,15 @@ namespace AIoT.EntityFramework.EfCore
                     return null;
             }
         }
-
+  
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             try
             {
-
-
                 ApplyEntityChanges();
-
-                var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
                 var eventDatas = ChangeTracker.Entries().Select(p => (p.Entity, p.State, p.Metadata.ClrType)).ToList();
+                var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+               
                 await PublishEventsAsync(eventDatas);
 
                 return result;
@@ -174,8 +174,9 @@ namespace AIoT.EntityFramework.EfCore
         {
             foreach (var (entity, state, type) in eventDatas)
             {
-                var method = _publishEventAsync.MakeGenericMethod(type);
-                await (Task)method.Invoke(this, new[] { entity, state });
+                //var method = _publishEventAsync.MakeGenericMethod(type);
+                //await (Task)method.Invoke(this, new[] { entity, state });
+               await  PublishEventAsync(entity, state);
             }
         }
 
@@ -194,22 +195,10 @@ namespace AIoT.EntityFramework.EfCore
                 case EntityState.Deleted:
                     await LocalEventBus.PublishAsync(new EntityDeletedEventData<TEntity>(entity));
                     break;
+                default:break;
             }
         }
 
-        //public virtual void Initialize(AbpEfCoreDbContextInitializationContext initializationContext)
-        //{
-        //    if (initializationContext.UnitOfWork.Options.Timeout.HasValue &&
-        //        //Database.IsRelational() &&
-        //        !Database.GetCommandTimeout().HasValue)
-        //    {
-        //        Database.SetCommandTimeout(TimeSpan.FromMilliseconds(initializationContext.UnitOfWork.Options.Timeout.Value));
-        //    }
-
-        //    ChangeTracker.CascadeDeleteTiming = CascadeTiming.OnSaveChanges;
-
-        //    ChangeTracker.Tracked += ChangeTracker_Tracked;
-        //}
 
       
       

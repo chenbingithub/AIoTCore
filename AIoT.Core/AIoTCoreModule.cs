@@ -15,6 +15,9 @@ using AIoT.Core.AutoMap;
 using System.Collections.Generic;
 using Volo.Abp.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using IdentityModel.Client;
+using System;
+using AIoT.Core.Enums;
 
 namespace AIoT.Core
 {
@@ -80,7 +83,31 @@ namespace AIoT.Core
             context.Services.AddSingleton(typeof(IDataFilter<>), typeof(DataFilter<>));
 
             // 配置AutoMapper
+            services.ConfigMapper(CreateDtoMappings);
             services.ConfigMapper(ConfigMapFromAttribute);
+        }
+        /// <summary>
+        /// 创建 Dto 对象映射
+        /// </summary>
+        private void CreateDtoMappings(IMapperConfigurationExpression config)
+        {
+            // 配置默认不检查所有属性映射
+            config.ForAllMaps((t, c) => c.ValidateMemberList(MemberList.None));
+
+            config.CreateMap<Enum, DisplayItem>()
+                .ConvertUsing(p => new DisplayItem
+                {
+                    Id = p,
+                    Name = p.DisplayName(),
+                    Value = p.ToString("G"),
+                    ShortName = p.DisplayShortName(),
+                    Description = p.DisplayDescription(),
+                    GroupName = p.DisplayGroupName(),
+                    Order = p.DisplayOrder(),
+                    Type = p.DisplayPrompt(),
+                });
+
+            //config.CreateMap<TokenResponse, TokenResult>(MemberList.None);
         }
         /// <summary>
         /// 配置 <see cref="MapFromAttribute"/> 映射

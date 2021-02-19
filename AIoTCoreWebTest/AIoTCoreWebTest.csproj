@@ -8,6 +8,7 @@
     <ProjectReference Include="..\AIoT.Core.Web\AIoT.Core.Web.csproj" />
     <ProjectReference Include="..\AIoT.Core\AIoT.Core.csproj" />
     <ProjectReference Include="..\AIoT.EntityFramework\AIoT.EntityFramework.csproj" />
+    <ProjectReference Include="..\AIoT.RedisCache\AIoT.RedisCache.csproj" />
   </ItemGroup>
 
 

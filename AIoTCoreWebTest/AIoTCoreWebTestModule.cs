@@ -4,6 +4,7 @@ using AIoT.Core.AutoMap;
 using AIoT.Core.Web;
 using AIoT.EntityFramework;
 using AIoT.EntityFramework.DependencyInjection;
+using AIoT.RedisCache;
 using AIoTCoreWebTest.Service;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
@@ -14,7 +15,7 @@ using Volo.Abp.Modularity;
 
 namespace AIoTCoreWebTest
 {
-    [DependsOn(typeof(AIoTCoreWebModule),typeof(AbpEntityFrameworkCoreModule))]
+    [DependsOn(typeof(AIoTCoreWebModule),typeof(AbpEntityFrameworkCoreModule),typeof(AIoTRedisCacheModule))]
     public class AIoTCoreWebTestModule:AbpModule
     {
         public override void ConfigureServices(ServiceConfigurationContext context)

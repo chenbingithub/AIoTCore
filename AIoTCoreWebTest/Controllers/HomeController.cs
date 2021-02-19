@@ -7,6 +7,7 @@ using AIoT.Core.Enums;
 using AIoT.Core.Repository;
 using AIoT.Core.Service;
 using AIoT.Core.Uow;
+using AIoT.Module.SysManager.Application;
 using AIoTCoreWebTest.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,10 +20,14 @@ namespace AIoTCoreWebTest.Controllers
     public class HomeController : ControllerBase
     {
         private IServiceProvider _serviceProvider;
+        private IRoleService roleService;
 
-        public HomeController(IServiceProvider serviceProvider)
+
+
+        public HomeController(IServiceProvider serviceProvider, IRoleService roleService)
         {
             _serviceProvider = serviceProvider;
+            this.roleService = roleService;
             //_context = context;
         }
 
@@ -30,11 +35,7 @@ namespace AIoTCoreWebTest.Controllers
         {
             try
             {
-                
-                
-                
-                
-                
+                              
                 
                 var db = _serviceProvider.GetService<MyDbContext>();
                 var r = await db.Roles.Where(u=>true).ToListAsync();
@@ -59,10 +60,6 @@ namespace AIoTCoreWebTest.Controllers
             {
 
 
-
-
-
-
                 var db = _serviceProvider.GetService<IRepository<Role>>();
 
                 var data=await db.FirstOrDefaultAsync<Role,RoleDto>(u=>u.Code== "string");
@@ -75,6 +72,16 @@ namespace AIoTCoreWebTest.Controllers
                 throw;
             }
 
+        }
+        public async Task<string> Index2()
+        {
+            await roleService.AddAsync(new RoleDto
+            {
+                Id="4567",
+                Name = "共和国dsaf",
+                Code = " sdf"
+            });
+            return $"ok";
         }
     }
 }

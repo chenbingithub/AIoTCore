@@ -1,5 +1,6 @@
 ﻿using System;
 using AIoT.Core;
+using AIoT.RedisCache.Cache.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
@@ -17,6 +18,8 @@ namespace AIoT.RedisCache
             var redisConStr = config.GetConnectionString("Redis");
             var redisConnect = ConnectionMultiplexer.Connect(redisConStr);
             context.Services.AddSingleton<IConnectionMultiplexer>(redisConnect);
+            context.Services.AddMemoryCache();
+            context.Services.AddSingleton<ICacheStorage, CacheStorage>();
 
             // 缓存
             context.Services.AddRedisDistributedCache(p =>

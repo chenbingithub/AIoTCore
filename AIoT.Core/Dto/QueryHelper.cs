@@ -74,7 +74,7 @@ namespace AIoT.Core.Dto
         /// <param name="defaultSort">默认排序</param>
         /// <param name="cancellationToken"></param>
         public static Task<List<TDto>> ToListAsync<TEntity, TDto>(this IQueryable<TEntity> source, 
-            IQuery query, ISortInfo sort, string defaultSort = null, CancellationToken cancellationToken = default)
+            IQuery query, ISortInfo sort=null, string defaultSort = null, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
             var data = source.Where(query).ProjectTo<TDto>().OrderBy(sort, defaultSort);
@@ -92,7 +92,7 @@ namespace AIoT.Core.Dto
         /// <param name="defaultSort">默认排序</param>
         /// <param name="cancellationToken"></param>
         public static Task<List<TDto>> ToListAsync<TEntity, TDto>(this IQueryable<TEntity> source, 
-            Expression<Func<TEntity, bool>> query, ISortInfo sort, string defaultSort = null, CancellationToken cancellationToken = default)
+            Expression<Func<TEntity, bool>> query, ISortInfo sort=null, string defaultSort = null, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
             var data = source.Where(query).ProjectTo<TDto>().OrderBy(sort, defaultSort);
@@ -109,7 +109,7 @@ namespace AIoT.Core.Dto
         /// <param name="defaultSort">默认排序</param>
         /// <param name="cancellationToken"></param>
         public static Task<List<TDto>> ToListAsync<TEntity, TDto>(this IQueryable<TEntity> source, 
-            ISortInfo sort, string defaultSort = null, CancellationToken cancellationToken = default)
+            ISortInfo sort=null, string defaultSort = null, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
             var data = source.ProjectTo<TDto>().OrderBy(sort, defaultSort);
