@@ -73,30 +73,28 @@ namespace AIoTCoreWebTest.Controllers
             }
 
         }
-        public async Task<string> Index2()
+        public async Task<Result> Index2()
         {
-            await roleService.AddAsync(new RoleDto
+            return await roleService.AddAsync(new RoleDto
             {
                 Id=Guid.NewGuid().ToString("D"),
                 Name = "共和国dsaf",
                 Code = " sdf"
             });
-            return $"ok";
+            
         }
-        public async Task<string> Index3()
+        public async Task<Result> Index3()
         {
-            await roleService.UpdateAsync(new RoleDto
+            return await roleService.UpdateAsync(new RoleDto
             {
                 Id = "3c9310b7-a6d4-42cb-9cdd-adf5718a98b9",
                 Name = "qqqqqq",
                 Code = " qqqq"
             });
-            return $"ok";
         }
-        public async Task<string> Index4()
+        public async Task<Result> Index4()
         {
-            await roleService.DeleteAsync("3c9310b7-a6d4-42cb-9cdd-adf5718a98b9");
-            return $"ok";
+            return await roleService.DeleteAsync("3c9310b7-a6d4-42cb-9cdd-adf5718a98b9");
         }
     }
 }

@@ -33,10 +33,16 @@ namespace AIoT.Core.Web
             var exception = context.Exception;
 
             context.HttpContext.Items.Add("ActionException", exception);
+
             
             var result = new ErrorResult();
             result.ByError("系统异常，请稍后再试！");
 
+            if (exception is ResultException resultException)
+            {
+                result.RetCode = resultException.Result.RetCode;
+                result.Message = resultException.Result.Message;
+            }
             if (!_env.IsProduction())
             {
                 result.Error[nameof(Exception.Message)] = exception.Message;
