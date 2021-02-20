@@ -18,7 +18,7 @@ namespace AIoT.Core.Web
     /// 基本业务功能：Get、Add、Edit、Query、Delete、Export、Import、Print
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class PermissionAttribute : Attribute, IAsyncAuthorizationFilter, IOrderedFilter
+    public class ApiPermissionAttribute : Attribute, IAsyncAuthorizationFilter, IOrderedFilter
     {
         /// <summary>
         /// 权限编码
@@ -32,7 +32,7 @@ namespace AIoT.Core.Web
         /// 功能权限验证
         /// </summary>
         /// <param name="permissions">权限编码</param>
-        public PermissionAttribute(params string[] permissions)
+        public ApiPermissionAttribute(params string[] permissions)
         {
             Permissions = permissions ?? new string[0];
             Order = 0;

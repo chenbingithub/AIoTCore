@@ -1,5 +1,6 @@
 ﻿using System;
 using AIoT.Core;
+using AIoT.RedisCache.Cache;
 using AIoT.RedisCache.Cache.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +27,16 @@ namespace AIoT.RedisCache
             {
                 p.Connection = redisConnect;
                 p.Prefix = "AIoT:Cache";
+            });
+
+            // Cache，默认缓存时间：30分钟， 内存+Redis
+            Configure<CacheOptions>(options =>
+            {
+                options.CacheOption(CacheOptions.DefaultCacheName, p =>
+                {
+                    p.AbsoluteExpire = TimeSpan.FromMinutes(30);
+                    p.StoragePolicy = CacheStoragePolicy.MemoryAndRedis;
+                });
             });
         }
 

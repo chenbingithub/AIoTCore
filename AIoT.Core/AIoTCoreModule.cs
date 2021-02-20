@@ -17,7 +17,9 @@ using Volo.Abp.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using IdentityModel.Client;
 using System;
+using AIoT.Core.Authorization;
 using AIoT.Core.Enums;
+using AIoT.Core.EventBus.Local;
 
 namespace AIoT.Core
 {
@@ -30,8 +32,11 @@ namespace AIoT.Core
 
             // Uow 拦截器
             services.OnRegistred(UnitOfWorkInterceptorRegistrar.RegisterIfNeeded);
+            // Permission 拦截器
+            services.OnRegistred(PermissionInterceptorRegister.RegisterIfNeeded);
+            // LocalEventBus
+            services.OnExposing(p => LocalEventHandlerRegister.RegisterIfNeeded(p, services));
 
-            
         }
         private static bool _staticMapperInitialized;
         private static readonly object _autoMapperSyncObj = new object();
