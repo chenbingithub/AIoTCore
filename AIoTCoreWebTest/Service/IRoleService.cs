@@ -86,7 +86,13 @@ namespace AIoT.Module.SysManager.Application
             return Result.Ok();
         }
 
-       
+        public async Task<Result> DeleteAsync(string id)
+        {
+
+             await _roleRepository.DeleteAsync(id);
+           
+            return Result.Ok();
+        }
 
     }
 }

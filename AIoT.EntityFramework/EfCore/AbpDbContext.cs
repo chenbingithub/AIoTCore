@@ -32,9 +32,9 @@ namespace AIoT.EntityFramework.EfCore
         public IDataFilter DataFilter { get; set; }
 
         /// <summary>
-        /// 本地事件总线
+        /// 实体变更事件help
         /// </summary>
-        public ILocalEventBus LocalEventBus { protected get; set; } = NullLocalEventBus.Instanse;
+        public IEntityChangeEventHelper EntityChangeEventHelper { protected get; set; }
 
         /// <summary>
         /// 属性注入 <see cref="AuditPropertySetter"/>
@@ -44,12 +44,7 @@ namespace AIoT.EntityFramework.EfCore
 
         public ILogger<AbpDbContext<TDbContext>> Logger { get; set; }
 
-        private static readonly MethodInfo ConfigureBasePropertiesMethodInfo
-            = typeof(AbpDbContext<TDbContext>)
-                .GetMethod(
-                    nameof(ConfigureBaseProperties),
-                    BindingFlags.Instance | BindingFlags.NonPublic
-                );
+       
 
 
         protected AbpDbContext(DbContextOptions<TDbContext> options)
@@ -60,55 +55,19 @@ namespace AIoT.EntityFramework.EfCore
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            //map
+            modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
 
-           // TrySetDatabaseProvider(modelBuilder);
+            base.OnModelCreating(modelBuilder);
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
-                ConfigureBasePropertiesMethodInfo
+                ConfigureBaseGlobalFilters
                     .MakeGenericMethod(entityType.ClrType)
                     .Invoke(this, new object[] { modelBuilder, entityType });
-
-
-
             }
         }
 
-        protected virtual void TrySetDatabaseProvider(ModelBuilder modelBuilder)
-        {
-            var provider = GetDatabaseProviderOrNull(modelBuilder);
-            if (provider != null)
-            {
-                modelBuilder.Model.SetAnnotation(ModelDatabaseProviderAnnotationKey, provider.Value);
-            }
-        }
-
-        protected virtual EfCoreDatabaseProvider? GetDatabaseProviderOrNull(ModelBuilder modelBuilder)
-        {
-            switch (Database.ProviderName)
-            {
-                case "Microsoft.EntityFrameworkCore.SqlServer":
-                    return EfCoreDatabaseProvider.SqlServer;
-                case "Npgsql.EntityFrameworkCore.PostgreSQL":
-                    return EfCoreDatabaseProvider.PostgreSql;
-                case "Pomelo.EntityFrameworkCore.MySql":
-                    return EfCoreDatabaseProvider.MySql;
-                case "Oracle.EntityFrameworkCore":
-                case "Devart.Data.Oracle.Entity.EFCore":
-                    return EfCoreDatabaseProvider.Oracle;
-                case "Microsoft.EntityFrameworkCore.Sqlite":
-                    return EfCoreDatabaseProvider.Sqlite;
-                case "Microsoft.EntityFrameworkCore.InMemory":
-                    return EfCoreDatabaseProvider.InMemory;
-                case "FirebirdSql.EntityFrameworkCore.Firebird":
-                    return EfCoreDatabaseProvider.Firebird;
-                case "Microsoft.EntityFrameworkCore.Cosmos":
-                    return EfCoreDatabaseProvider.Cosmos;
-                default:
-                    return null;
-            }
-        }
   
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
@@ -147,25 +106,13 @@ namespace AIoT.EntityFramework.EfCore
 
             ChangeTracker.CascadeDeleteTiming = CascadeTiming.OnSaveChanges;
 
-            ChangeTracker.Tracked += ChangeTracker_Tracked;
+            //ChangeTracker.Tracked += ChangeTracker_Tracked;
         }
 
-        protected virtual void ChangeTracker_Tracked(object sender, EntityTrackedEventArgs e)
-        {
-            var entityType = e.Entry.Metadata.ClrType;
-            if (entityType == null)
-            {
-                return;
-            }
+        //protected virtual void ChangeTracker_Tracked(object sender, EntityTrackedEventArgs e)
+        //{
 
-
-            if (!e.FromQuery)
-            {
-                return;
-            }
-        }
-
-        
+        //}
 
         /// <summary>
         /// 发布到EnitityEvent
@@ -174,36 +121,11 @@ namespace AIoT.EntityFramework.EfCore
         {
             foreach (var (entity, state, type) in eventDatas)
             {
-                //var method = _publishEventAsync.MakeGenericMethod(type);
-                //await (Task)method.Invoke(this, new[] { entity, state });
-               await  PublishEventAsync(entity, state);
-            }
-        }
-
-        private static readonly MethodInfo _publishEventAsync = typeof(AbpDbContext<>)
-            .GetMethod(nameof(PublishEventAsync), BindingFlags.Instance | BindingFlags.NonPublic);
-        private async Task PublishEventAsync<TEntity>(TEntity entity, EntityState state)
-        {
-            switch (state)
-            {
-                case EntityState.Added:
-                    await LocalEventBus.PublishAsync(new EntityCreatedEventData<TEntity>(entity));
-                    break;
-                case EntityState.Modified:
-                    await LocalEventBus.PublishAsync(new EntityUpdatedEventData<TEntity>(entity));
-                    break;
-                case EntityState.Deleted:
-                    await LocalEventBus.PublishAsync(new EntityDeletedEventData<TEntity>(entity));
-                    break;
-                default:break;
+                await EntityChangeEventHelper.TriggerEntityChangedEvent(entity, state, type);
             }
         }
 
 
-      
-      
-
-     
 
         /// <summary>
         /// 处理实体变更操作
@@ -259,21 +181,13 @@ namespace AIoT.EntityFramework.EfCore
             AuditPropertySetter?.SetModificationProperties(entry.Entity);
         }
 
-       
-       
-        protected virtual void ConfigureBaseProperties<TEntity>(ModelBuilder modelBuilder, IMutableEntityType mutableEntityType)
-            where TEntity : class
-        {
-            
-            if (!typeof(IEntity).IsAssignableFrom(typeof(TEntity)))
-            {
-                return;
-            }
+        private static readonly MethodInfo ConfigureBaseGlobalFilters
+            = typeof(AbpDbContext<TDbContext>)
+                .GetMethod(
+                    nameof(ConfigureGlobalFilters),
+                    BindingFlags.Instance | BindingFlags.NonPublic
+                );
 
-          //  modelBuilder.Entity<TEntity>().ConfigureByConvention();
-
-            ConfigureGlobalFilters<TEntity>(modelBuilder, mutableEntityType);
-        }
 
         protected virtual void ConfigureGlobalFilters<TEntity>(ModelBuilder modelBuilder ,IMutableEntityType mutableEntityType)
             where TEntity : class
@@ -285,10 +199,6 @@ namespace AIoT.EntityFramework.EfCore
             }
         }
 
-
-
-        
-
         protected virtual Expression<Func<TEntity, bool>> CreateFilterExpression<TEntity>()
             where TEntity : class
         {
@@ -298,8 +208,6 @@ namespace AIoT.EntityFramework.EfCore
             {
                 expression = e => !IsSoftDeleteFilterEnabled || !EF.Property<bool>(e, "IsDeleted");
             }
-
-
             return expression;
         }
 

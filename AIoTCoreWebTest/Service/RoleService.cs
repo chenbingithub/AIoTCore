@@ -38,7 +38,9 @@ namespace AIoT.Module.SysManager.Application
          Task<Result> UpdateAsync(RoleDto input)
        ;
 
-       
+        Task<Result> DeleteAsync(string id);
+
+
 
     }
 }
