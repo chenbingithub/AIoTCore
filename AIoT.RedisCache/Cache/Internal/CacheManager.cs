@@ -11,30 +11,30 @@ namespace AIoT.RedisCache.Cache.Internal
     /// </summary>
     public class CacheManager : ICacheManager, ISingletonDependency
     {
-        private readonly CacheOptions _config;
-        private readonly IConnectionMultiplexer _redis;
-        private readonly IMemoryCache _memoryCache;
+        private readonly IOptions<CacheOptions> _config;
+        private readonly ICacheStorage _cacheStorage;
 
         /// <summary>
         /// 缓存管理
         /// </summary>
-        public CacheManager(IOptions<CacheOptions> config, IConnectionMultiplexer redis, IMemoryCache memoryCache)
+        public CacheManager(IOptions<CacheOptions> config, ICacheStorage cacheStorage)
         {
-            _config = config.Value;
-            _redis = redis;
-            _memoryCache = memoryCache;
+            _cacheStorage = cacheStorage;
+            _config = config;
         }
 
         /// <inheritdoc />
         public ICache<TData> GetCache<TData>(string cacheName = null)
         {
-            return new Cache<TData>(_memoryCache, _redis, _config, cacheName ?? CacheBase.DefaultName);
+            return new Cache<TData>(_cacheStorage, _config, cacheName ?? CacheOptions.DefaultCacheName);
         }
 
         /// <inheritdoc />
-        public IListCache<TId, TData> GetListCache<TId, TData>(string cacheName = null)
+        public IListCache<TData, TId> GetListCache<TData, TId>(string cacheName = null)
         {
-            return new ListCache<TId, TData>(_memoryCache, _redis, _config, cacheName ?? CacheBase.DefaultName);
+            return new ListCache<TData, TId>(_cacheStorage, _config, cacheName ?? CacheOptions.DefaultCacheName);
         }
+
+
     }
 }

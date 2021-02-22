@@ -23,17 +23,19 @@ namespace AIoTCoreWebTest.Controllers
         private IServiceProvider _serviceProvider;
         private IRoleService roleService;
         private IRoleCache _roleCache;
+        private IRoleListCache _roleListCache;
         private ICacheManager _cacheManager;
         private readonly IRepository<Role, string> _roleRepository;
 
 
-        public HomeController(IServiceProvider serviceProvider, IRoleService roleService, IRoleCache roleCache, ICacheManager cacheManager, IRepository<Role, string> roleRepository)
+        public HomeController(IServiceProvider serviceProvider, IRoleService roleService, IRoleCache roleCache, ICacheManager cacheManager, IRepository<Role, string> roleRepository, IRoleListCache roleListCache)
         {
             _serviceProvider = serviceProvider;
             this.roleService = roleService;
             _roleCache = roleCache;
             _cacheManager = cacheManager;
             _roleRepository = roleRepository;
+            _roleListCache = roleListCache;
             //_context = context;
         }
 
@@ -110,6 +112,11 @@ namespace AIoTCoreWebTest.Controllers
         {
             return await _cacheManager.GetCache<RoleCacheItem>().GetOrAddAsync("3c9310b7-a6d4-42cb-9cdd-adf5718a98b9",
                 () => _roleRepository.FirstOrDefaultAsync<Role, RoleCacheItem>(u => u.Id == "3c9310b7-a6d4-42cb-9cdd-adf5718a98b9"));
+        }
+        public async Task<string> Index7()
+        {
+            var dd= await _roleListCache.GetAllAsync();
+            return "ok";
         }
     }
 }

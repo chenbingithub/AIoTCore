@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 
 namespace AIoT.RedisCache.Cache.Internal
@@ -32,23 +35,21 @@ namespace AIoT.RedisCache.Cache.Internal
         public const string CacheExpiredChannel = "DistributedCache.CacheExpired";
 
         /// <summary>
-        /// Channel 缓存更新
-        /// </summary>
-        public const string CacheUpdatedChannel = "DistributedCache.CacheUpdated";
-
-        /// <summary>
         /// Meta 无过期时间
         /// </summary>
         public const long NotPresent = -1;
-        
-        /// <summary>
-        /// 默认缓存名称
-        /// </summary>
-        public const string DefaultName = "Default";
 
         #endregion
-        
-   
+
+        /// <summary>
+        /// 缓存互斥锁
+        /// </summary>
+        public static readonly ConcurrentDictionary<string, AsyncLock> Locks = new ConcurrentDictionary<string, AsyncLock>();
+
+        /// <summary>
+        /// 缓存存储服务
+        /// </summary>
+        public ICacheStorage CacheStorage { get; }
 
         /// <summary>
         /// 内存缓存
@@ -63,7 +64,7 @@ namespace AIoT.RedisCache.Cache.Internal
         /// <summary>
         /// 缓存配置
         /// </summary>
-        protected CacheEntryOptions Options { get; }
+        protected CacheEntryConfigOptions Options { get; }
 
         /// <summary>
         /// 全局配置
@@ -75,23 +76,31 @@ namespace AIoT.RedisCache.Cache.Internal
         /// </summary>
         public string CacheName { get; }
 
-        /// <inheritdoc />
-        protected CacheBase(IMemoryCache memoryCache, IConnectionMultiplexer redis, CacheOptions config, string cacheName = null)
+        /// <summary>
+        /// 缓存策略
+        /// </summary>
+        public CacheStoragePolicy StoragePolicy { get; set; }
+
+        /// <inheritdoc cref="CacheBase" />
+        protected CacheBase(ICacheStorage cacheStorage, IOptions<CacheOptions> config, string cacheName = CacheOptions.DefaultCacheName)
         {
-            CacheName = cacheName ?? DefaultName;
-            Config = config ?? throw new ArgumentNullException(nameof(config));
+            CacheName = cacheName ?? CacheOptions.DefaultCacheName;
+            Config = config.Value;
+
+            CacheStorage = cacheStorage;
+            RedisCache = cacheStorage.GetRedisCache();
+            MemoryCache = cacheStorage.GetMemoryCache();
             Options = Config.GetOrDefaultOption(CacheName);
 
-            RedisCache = redis.GetDatabase(config.Db);
-            MemoryCache = memoryCache;
+            StoragePolicy = Options.StoragePolicy;
         }
-        
+
         /// <summary>
         /// 获取缓存Key
         /// </summary>
         protected virtual string GetCacheKey(string key)
         {
-            return $"{Config.Prefix}:{CacheName}:{key}";
+            return $"{Config.Prefix}:{key}";
         }
     }
 }

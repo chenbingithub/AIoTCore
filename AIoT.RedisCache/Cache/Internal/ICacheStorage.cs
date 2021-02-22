@@ -8,7 +8,7 @@ namespace AIoT.RedisCache.Cache.Internal
     /// 缓存存储类
     /// </summary>
     public interface ICacheStorage
-    {        
+    {
         /// <summary>
         /// 获取内存缓存
         /// </summary>

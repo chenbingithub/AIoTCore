@@ -29,6 +29,9 @@ namespace AIoT.RedisCache.Cache
                 [DefaultCacheName] = DefaultCache
             };
 
+            SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Local;
+            SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            SerializerSettings.Formatting = Formatting.None;
         }
 
         /// <summary>

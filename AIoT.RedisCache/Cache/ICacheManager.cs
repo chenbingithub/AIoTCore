@@ -1,4 +1,5 @@
 ﻿using AIoT.Core.Cache;
+using AIoT.RedisCache.Cache.Internal;
 
 namespace AIoT.RedisCache.Cache
 {
@@ -16,5 +17,7 @@ namespace AIoT.RedisCache.Cache
         /// 获取指定名称的 <see cref="IListCache{TId,TData}"/>
         /// </summary>
         IListCache<TData, TId> GetListCache<TData, TId>(string cacheName = null);
+
+
     }
 }

@@ -12,7 +12,7 @@ namespace AIoT.RedisCache.Cache.Internal
     /// <summary>
     /// 缓存存储类
     /// </summary>
-    public class CacheStorage : ICacheStorage, IHostedService, IDisposable
+    public class CacheStorage : ICacheStorage, IHostedService, ISingletonDependency, IDisposable
     {
         private readonly CacheOptions _options;
         private IMemoryCache _memoryCache;

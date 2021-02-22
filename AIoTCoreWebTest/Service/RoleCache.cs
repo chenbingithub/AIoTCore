@@ -4,11 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AIoT.Core.Cache;
 using Volo.Abp.DependencyInjection;
 
 namespace AIoTCoreWebTest.Service
 {
     public interface IRoleCache : IEntityCache<RoleCacheItem, string>
+    {
+
+    }
+    public interface IRoleListCache : IEntityListCache<RoleCacheItem, string>
     {
 
     }
@@ -27,5 +32,15 @@ namespace AIoTCoreWebTest.Service
         {
         }
          
+    }
+
+    public class RoleListCache : EntityListCache<Role, RoleCacheItem, string>, IRoleListCache, ITransientDependency
+    {
+        public RoleListCache(IRepository<Role, string> repository, ICacheManager cacheManager, string cacheName = DefaultCacheName) : base(repository, cacheManager, cacheName)
+        {
+        }
+
+        protected override string GetKeyByCacheItem(RoleCacheItem data) => data.Id;
+       
     }
 }

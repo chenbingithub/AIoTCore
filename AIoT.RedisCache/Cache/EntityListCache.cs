@@ -89,7 +89,7 @@ namespace AIoT.RedisCache.Cache
         /// <summary>
         /// 从数据库获取缓存数据
         /// </summary>
-        protected virtual async Task<IDictionary<TKey, TCacheItem>> GetFromDbAsync()
+        protected virtual async Task<IReadOnlyDictionary<TKey, TCacheItem>> GetFromDbAsync()
         {
             var cacheItems = await Repository.ProjectTo<TCacheItem>()
                 .ToDictionaryAsync(GetKeyByCacheItem);

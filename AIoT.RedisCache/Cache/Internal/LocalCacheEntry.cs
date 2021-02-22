@@ -1,5 +1,8 @@
-﻿namespace AIoT.RedisCache.Cache.Internal
+﻿using System.Collections.Generic;
+
+namespace AIoT.RedisCache.Cache.Internal
 {
+
     /// <summary>
     /// 本地缓存对像
     /// </summary>
@@ -23,5 +26,17 @@
         /// 元数据
         /// </summary>
         public CacheMeta Meta { get; }
+    }
+
+
+    /// <summary>
+    /// 本地缓存对像
+    /// </summary>
+    public class LocalCacheEntry<TKey, TData> : LocalCacheEntry<IReadOnlyDictionary<TKey, TData>>
+    {
+        /// <inheritdoc />
+        public LocalCacheEntry(IReadOnlyDictionary<TKey, TData> data, CacheMeta meta) : base(data, meta)
+        {
+        }
     }
 }

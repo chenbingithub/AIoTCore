@@ -30,9 +30,15 @@ namespace AIoT.RedisCache.Cache
         ValueTask<IEnumerable<TData>> GetAllAsync(string key, IEnumerable<TId> ids);
 
         /// <summary>
+        /// 获取所有缓存Id，如果不存在则返回 null
+        /// </summary>
+        ValueTask<IEnumerable<TId>> GetAllIdsAsync(string key);
+
+        /// <summary>
         /// 获取或添加缓存集合，如果 factory 返回 null 则不缓存
         /// </summary>
-        ValueTask<IReadOnlyDictionary<TId, TData>> GetOrAddAsync(string key, Func<Task<IDictionary<TId, TData>>> factory,
+        ValueTask<IReadOnlyDictionary<TId, TData>> GetOrAddAsync(string key,
+            Func<Task<IReadOnlyDictionary<TId, TData>>> factory,
             Func<CacheEntryOptions> optionsFactory = null);
 
         /// <summary>
@@ -44,7 +50,7 @@ namespace AIoT.RedisCache.Cache
         /// <summary>
         /// 添加缓存集合
         /// </summary>
-        Task SetAsync(string key, IDictionary<TId, TData> values, CacheEntryOptions options = null);
+        Task SetAsync(string key, IReadOnlyDictionary<TId, TData> values, CacheEntryOptions options = null);
 
         /// <summary>
         /// 添加单个缓存
