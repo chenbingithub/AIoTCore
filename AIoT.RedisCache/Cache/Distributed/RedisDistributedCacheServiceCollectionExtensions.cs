@@ -34,15 +34,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<ICacheStorage, CacheStorage>();
             services.AddHostedService<CacheStorage>();
             services.AddMemoryCache();
-            // Cache，默认缓存时间：30分钟， 内存+Redis
-            services.Configure<CacheOptions>(options =>
-            {
-                options.CacheOption(CacheOptions.DefaultCacheName, p =>
-                {
-                    p.AbsoluteExpire = TimeSpan.FromMinutes(30);
-                    p.StoragePolicy = CacheStoragePolicy.MemoryAndRedis;
-                });
-            });
+      
             services.Configure(optionsAction);
             return services;
         }

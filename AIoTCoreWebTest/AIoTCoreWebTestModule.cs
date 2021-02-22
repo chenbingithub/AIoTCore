@@ -33,6 +33,7 @@ namespace AIoTCoreWebTest
         private void CreateDtoMappings(IMapperConfigurationExpression s)
         {
             s.CreateMap<Role, RoleDto>();
+            s.CreateMap<Role, RoleCacheItem>();
         }
 
         public override void OnApplicationInitialization(ApplicationInitializationContext context)

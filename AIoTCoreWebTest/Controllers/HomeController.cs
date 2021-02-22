@@ -8,6 +8,7 @@ using AIoT.Core.Repository;
 using AIoT.Core.Service;
 using AIoT.Core.Uow;
 using AIoT.Module.SysManager.Application;
+using AIoT.RedisCache.Cache;
 using AIoTCoreWebTest.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,13 +22,18 @@ namespace AIoTCoreWebTest.Controllers
     {
         private IServiceProvider _serviceProvider;
         private IRoleService roleService;
+        private IRoleCache _roleCache;
+        private ICacheManager _cacheManager;
+        private readonly IRepository<Role, string> _roleRepository;
 
 
-
-        public HomeController(IServiceProvider serviceProvider, IRoleService roleService)
+        public HomeController(IServiceProvider serviceProvider, IRoleService roleService, IRoleCache roleCache, ICacheManager cacheManager, IRepository<Role, string> roleRepository)
         {
             _serviceProvider = serviceProvider;
             this.roleService = roleService;
+            _roleCache = roleCache;
+            _cacheManager = cacheManager;
+            _roleRepository = roleRepository;
             //_context = context;
         }
 
@@ -95,6 +101,15 @@ namespace AIoTCoreWebTest.Controllers
         public async Task<Result> Index4()
         {
             return await roleService.DeleteAsync("3c9310b7-a6d4-42cb-9cdd-adf5718a98b9");
+        }
+        public async Task<RoleCacheItem> Index5()
+        {
+            return await _roleCache.GetAsync("3c9310b7-a6d4-42cb-9cdd-adf5718a98b9");
+        }
+        public async Task<RoleCacheItem> Index6()
+        {
+            return await _cacheManager.GetCache<RoleCacheItem>().GetOrAddAsync("3c9310b7-a6d4-42cb-9cdd-adf5718a98b9",
+                () => _roleRepository.FirstOrDefaultAsync<Role, RoleCacheItem>(u => u.Id == "3c9310b7-a6d4-42cb-9cdd-adf5718a98b9"));
         }
     }
 }
