@@ -25,7 +25,9 @@ namespace AIoT.RedisCache
             context.Services.AddRedisDistributedCache(p =>
             {
                 p.Connection = redisConnect;
-                p.Prefix = "AIoT:Cache";
+                p.Prefix = "AIoT";
+                p.DefaultCache.StoragePolicy = CacheStoragePolicy.Redis;
+                p.DefaultCache.AbsoluteExpire = TimeSpan.FromMinutes(30);
             });
 
         }
