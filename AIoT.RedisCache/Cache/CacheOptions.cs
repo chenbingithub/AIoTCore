@@ -54,10 +54,7 @@ namespace AIoT.RedisCache.Cache
         /// </summary>
         public JsonSerializerSettings SerializerSettings { get; } = new JsonSerializerSettings();
 
-        /// <summary>
-        /// 缓存配置
-        /// </summary>
-        public IReadOnlyDictionary<string, CacheEntryConfigOptions> EntryOptions => _entryOptions;
+    
 
         /// <summary>
         /// 获取缓存配置
@@ -67,20 +64,6 @@ namespace AIoT.RedisCache.Cache
             return _entryOptions.TryGetValue(cacheName, out var option) ? option : DefaultCache;
         }
 
-        /// <summary>
-        /// 配置缓存
-        /// </summary>
-        public CacheOptions CacheOption(string cacheName, Action<CacheEntryConfigOptions> configAction)
-        {
-            if (!_entryOptions.TryGetValue(cacheName, out var option))
-            {
-                _entryOptions.Add(cacheName, option = new CacheEntryConfigOptions());
-            }
-
-            configAction(option);
-
-            return this;
-        }
 
         /// <summary>
         /// 缓存默认配置: 绝对过期时间：30分钟， 策略：内存+Redis
