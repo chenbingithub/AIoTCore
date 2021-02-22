@@ -84,7 +84,7 @@ namespace AIoT.RedisCache.Cache.Internal
         /// <inheritdoc cref="CacheBase" />
         protected CacheBase(ICacheStorage cacheStorage, IOptions<CacheOptions> config, string cacheName = CacheOptions.DefaultCacheName)
         {
-            CacheName = cacheName ?? CacheOptions.DefaultCacheName;
+            CacheName = cacheName;
             Config = config.Value;
 
             CacheStorage = cacheStorage;
