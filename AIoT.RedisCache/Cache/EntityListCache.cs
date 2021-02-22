@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AIoT.Core.Entities;
+using AIoT.Core.EventBus.Events;
 using AIoT.Core.EventBus.Local;
-using AIoT.Core.Events;
 using AIoT.Core.Repository;
 using AIoT.Core.Uow;
 using AutoMapper.QueryableExtensions;

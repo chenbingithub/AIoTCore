@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace AIoT.Core.Events
+namespace AIoT.Core.EventBus.Events
 {
     /// <summary>
     /// 实体变更事件

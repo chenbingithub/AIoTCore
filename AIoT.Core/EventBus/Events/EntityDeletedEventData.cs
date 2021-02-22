@@ -1,6 +1,6 @@
-﻿﻿using System;
+﻿using System;
 
- namespace AIoT.Core.Events
+namespace AIoT.Core.EventBus.Events
 {
 
     /// <summary>

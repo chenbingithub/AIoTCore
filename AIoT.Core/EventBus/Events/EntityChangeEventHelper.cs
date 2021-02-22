@@ -5,7 +5,7 @@ using AIoT.Core.EventBus.Local;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.DependencyInjection;
 
-namespace AIoT.Core.Events
+namespace AIoT.Core.EventBus.Events
 {
     /// <inheritdoc cref="IEntityChangeEventHelper" />
     public class EntityChangeEventHelper : IEntityChangeEventHelper, ITransientDependency
