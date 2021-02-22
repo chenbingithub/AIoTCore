@@ -19,8 +19,7 @@ namespace AIoT.RedisCache
             var redisConStr = config.GetConnectionString("Redis");
             var redisConnect = ConnectionMultiplexer.Connect(redisConStr);
             context.Services.AddSingleton<IConnectionMultiplexer>(redisConnect);
-            context.Services.AddMemoryCache();
-            context.Services.AddSingleton<ICacheStorage, CacheStorage>();
+           
 
             // 缓存
             context.Services.AddRedisDistributedCache(p =>
@@ -29,15 +28,6 @@ namespace AIoT.RedisCache
                 p.Prefix = "AIoT:Cache";
             });
 
-            // Cache，默认缓存时间：30分钟， 内存+Redis
-            Configure<CacheOptions>(options =>
-            {
-                options.CacheOption(CacheOptions.DefaultCacheName, p =>
-                {
-                    p.AbsoluteExpire = TimeSpan.FromMinutes(30);
-                    p.StoragePolicy = CacheStoragePolicy.MemoryAndRedis;
-                });
-            });
         }
 
     }
