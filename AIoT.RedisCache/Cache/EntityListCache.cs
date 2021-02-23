@@ -20,16 +20,15 @@ namespace AIoT.RedisCache.Cache
     public abstract class EntityListCache<TEntity, TCacheItem, TKey> : 
         EntityCache,
         IEntityListCache<TCacheItem, TKey>,
-        ITransientDependency,
         ILocalEventHandler<EntityChangedEventData<TEntity>>
         where TEntity : class, IEntity<TKey>
     {
         /// <summary>
         /// 使用分布式缓存实现 <see cref="IEntityListCache{TCacheItem}"/>
         /// </summary>
-        protected EntityListCache(IRepository<TEntity, TKey> repository, ICacheManager cacheManager, string cacheName = DefaultCacheName)
+        protected EntityListCache(IRepository<TEntity, TKey> repository, ICacheManager cacheManager)
         {
-            CacheName = cacheName ?? DefaultCacheName;
+            CacheName = DefaultCacheName;
             Repository = repository;
             InternalCache = cacheManager.GetListCache<TCacheItem,TKey>(CacheName);
         }
@@ -143,8 +142,8 @@ namespace AIoT.RedisCache.Cache
         where TEntity : class, IEntity<int>
     {
         /// <inheritdoc />
-        protected EntityListCache(IRepository<TEntity, int> repository, ICacheManager cacheManager, string cacheName = DefaultCacheName)
-            : base(repository, cacheManager, cacheName)
+        protected EntityListCache(IRepository<TEntity, int> repository, ICacheManager cacheManager)
+            : base(repository, cacheManager)
         {
         }
     }

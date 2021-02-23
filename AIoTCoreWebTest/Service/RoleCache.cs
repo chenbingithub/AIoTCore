@@ -36,7 +36,7 @@ namespace AIoTCoreWebTest.Service
 
     public class RoleListCache : EntityListCache<Role, RoleCacheItem, string>, IRoleListCache, ITransientDependency
     {
-        public RoleListCache(IRepository<Role, string> repository, ICacheManager cacheManager, string cacheName = DefaultCacheName) : base(repository, cacheManager, cacheName)
+        public RoleListCache(IRepository<Role, string> repository, ICacheManager cacheManager) : base(repository, cacheManager)
         {
         }
 

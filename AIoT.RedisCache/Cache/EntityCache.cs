@@ -37,9 +37,9 @@ namespace AIoT.RedisCache.Cache
         /// <summary>
         /// 使用分布式缓存实现 <see cref="IEntityCache{TCacheItem}"/>
         /// </summary>
-        protected EntityCache(IRepository<TEntity, TKey> repository, ICacheManager cacheManager, string cacheName = DefaultCacheName)
+        protected EntityCache(IRepository<TEntity, TKey> repository, ICacheManager cacheManager)
         {
-            CacheName = cacheName ?? DefaultCacheName;
+            CacheName = DefaultCacheName;
             Repository = repository;
             InternalCache = cacheManager.GetCache<TCacheItem>(CacheName);
         }
@@ -142,8 +142,8 @@ namespace AIoT.RedisCache.Cache
         where TEntity : class, IEntity<int>
     {
         /// <inheritdoc />
-        protected EntityCache(IRepository<TEntity, int> repository, ICacheManager cacheManager, string cacheName = DefaultCacheName) 
-            : base(repository, cacheManager, cacheName)
+        protected EntityCache(IRepository<TEntity, int> repository, ICacheManager cacheManager) 
+            : base(repository, cacheManager)
         {
         }
     }
