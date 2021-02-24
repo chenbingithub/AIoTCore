@@ -68,6 +68,8 @@ namespace AIoT.Core.Mqtt
 
             if (_isDisposed) return;
             await _mqttClient.DisconnectAsync(cancellationToken);
+            _mqttClient.Dispose();
+            Dispose();
         }
         public async Task PublishAsync(string topic, string payload)
         {
