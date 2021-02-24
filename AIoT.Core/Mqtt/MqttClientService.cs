@@ -76,15 +76,17 @@ namespace AIoT.Core.Mqtt
         private IMqttClientOptions CreateMqttClientOptions(MqttOptions options)
         {
             //连接到服务器前，获取所需要的MqttClientTcpOptions 对象的信息
-            var option = new MqttClientOptionsBuilder()
+            var optionBuild = new MqttClientOptionsBuilder()
                 .WithClientId(options.ClientId)
                 .WithTcpServer(options.HostIp, options.HostPort)
                 .WithCredentials(options.UserName, options.Password)
-                .WithCleanSession(false)
                 .WithKeepAlivePeriod(TimeSpan.FromSeconds(2000))
-                .WithCleanSession(true)
-                .Build();
-            return option;
+                .WithCleanSession();
+            if (options.EnableSsl)
+            {
+                optionBuild.WithTls();
+            }
+            return optionBuild.Build();
         }
 
         /// <inheritdoc />
