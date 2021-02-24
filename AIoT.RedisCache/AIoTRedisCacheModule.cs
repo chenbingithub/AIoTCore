@@ -18,9 +18,6 @@ namespace AIoT.RedisCache
             // Redis单例模式
             var redisConStr = config.GetConnectionString("Redis");
             var redisConnect = ConnectionMultiplexer.Connect(redisConStr);
-            context.Services.AddSingleton<IConnectionMultiplexer>(redisConnect);
-           
-
             // 缓存
             context.Services.AddRedisDistributedCache(p =>
             {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AIoT.Core.Data;
 using AIoT.Core.Dto;
 using AIoT.Core.Repository;
 using AIoT.Core.Service;
@@ -26,6 +27,7 @@ namespace AIoT.Module.SysManager.Application
         /// 根据角色权限获取角色数据
         /// </summary>
         /// <returns></returns>
+        [Readonly]
         public async Task<ListResult<RoleDto>> GetRoleAllAsync()
         {
             

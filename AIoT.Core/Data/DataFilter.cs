@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using AIoT.Core.Data;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,12 +28,32 @@ namespace Volo.Abp.Data
         {
             return GetFilter<TFilter>().Enable();
         }
-
+        private static readonly MethodInfo _enable = typeof(DataFilter)
+            .GetMethod(nameof(Enable), BindingFlags.Instance | BindingFlags.Public);
+        public IDisposable UseData(Type type,bool isEnable)
+        {
+            if (isEnable)
+            {
+                var method = _enable.MakeGenericMethod(type);
+                var obj = method.Invoke(this, null);
+                return obj as IDisposable;
+            }
+            else
+            {
+                var method = _disable.MakeGenericMethod(type);
+                var obj = method.Invoke(this, null);
+                return obj as IDisposable;
+            }
+            
+        }
+       
         public IDisposable Disable<TFilter>()
             where TFilter : class
         {
             return GetFilter<TFilter>().Disable();
         }
+        private static readonly MethodInfo _disable = typeof(DataFilter)
+            .GetMethod(nameof(Disable), BindingFlags.Instance | BindingFlags.Public);
 
         public bool IsEnabled<TFilter>()
             where TFilter : class
@@ -103,7 +124,7 @@ namespace Volo.Abp.Data
                 return;
             }
 
-            _filter.Value = _options.DefaultStates.GetOrDefault(typeof(TFilter))?.Clone() ?? new DataFilterState(true);
+            _filter.Value = _options.DefaultStates.GetOrDefault(typeof(TFilter))?.Clone() ?? new DataFilterState(false);
         }
     }
 }

@@ -16,7 +16,10 @@ namespace AIoT.Core.Data
     {
         IDisposable Enable<TFilter>()
             where TFilter : class;
-        
+
+        IDisposable UseData(Type type, bool isEnable);
+
+
         IDisposable Disable<TFilter>()
             where TFilter : class;
 

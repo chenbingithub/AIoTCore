@@ -34,6 +34,8 @@ namespace AIoT.Core
             services.OnRegistred(UnitOfWorkInterceptorRegistrar.RegisterIfNeeded);
             // Permission 拦截器
             services.OnRegistred(PermissionInterceptorRegister.RegisterIfNeeded);
+            //DataFilter 拦截器
+            services.OnRegistred(DataFilterInterceptorRegister.RegisterIfNeeded);
             // LocalEventBus
             services.OnExposing(p => LocalEventHandlerRegister.RegisterIfNeeded(p, services));
 

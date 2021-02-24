@@ -43,18 +43,9 @@ namespace AIoTCoreWebTest.Controllers
         {
             try
             {
-                
-                var db = _serviceProvider.GetService<MyDbContext>();
-                var r = await db.Roles.AsNoTracking().Where(u=>true).ToListAsync();
-                foreach (var role in r)
-                {
-                    role.Name += '1';
-                   
-                }
 
-                db.Roles.UpdateRange(r);
-                var d=await db.SaveChangesAsync();
-                return $"ok{d}";
+               var data=await roleService.GetRoleAllAsync();
+                return $"ok{data.Data.Count}";
             }
             catch (Exception e)
             {
@@ -63,6 +54,22 @@ namespace AIoTCoreWebTest.Controllers
                 throw;
             }
           
+        }
+        public async Task<string> Index00()
+        {
+            try
+            {
+
+                var data = await roleService.GetRoleAsync("11d9e4c60d4148a2a9c925f6be9b93b3");
+                return $"ok";
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
         public async Task<string> Index0()
         {
