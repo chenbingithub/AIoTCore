@@ -6,10 +6,10 @@ namespace AIoT.Core.Mqtt
     /// <summary>
     /// 
     /// </summary>
-    public interface IMqttClientManager
+    public interface IMqttClientWorkerManager
     {
-        Task AddAsync(MqttOptions option, CancellationToken cancellationToken = default);
-        Task RemoveAsync(string topicPrefix, CancellationToken cancellationToken = default);
+        void Add(MqttOptions option);
+        void Remove(string topicPrefix);
         /// <summary>
         /// 
         /// </summary>

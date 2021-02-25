@@ -1,34 +1,31 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
-using Volo.Abp.DependencyInjection;
 
 namespace AIoT.Core.Mqtt
 {
     /// <summary>
     /// 缓存存储类
     /// </summary>
-    public class MqttClientService :  IHostedService, IDisposable
+    public class MqttClientWorker :  IHostedService, IDisposable
     {
         private bool _isDisposed;
         private IMqttClientOptions _clientOptions;
         private IMqttClient _mqttClient;
         private MqttOptions _options;
         private IMessageReceivedHandler _messageReceivedHandler;
-        public MqttClientService(MqttOptions mqttOptions, IMessageReceivedHandler messageReceivedHandler)
+        public MqttClientWorker(MqttOptions mqttOptions, IMessageReceivedHandler messageReceivedHandler)
         {
             _options = mqttOptions;
             _messageReceivedHandler = messageReceivedHandler;
             _clientOptions = CreateMqttClientOptions(mqttOptions);
             _mqttClient = new MqttFactory().CreateMqttClient();
         }
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken=default)
         {
             try
             {
@@ -63,7 +60,7 @@ namespace AIoT.Core.Mqtt
         }
 
         /// <inheritdoc />
-        public async Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken=default)
         {
 
             if (_isDisposed) return;
